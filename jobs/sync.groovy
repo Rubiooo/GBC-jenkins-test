@@ -4,7 +4,7 @@ folder('repo-sync')
 
 class BuildJob {
   static sync(dslFactory, repofoler, reponame) {
-    var foldername=repofolder.replaceALL('/', '_')
+    def foldername=repofolder.replaceALL('/', '_')
     dslFactory.folder("repo-sync/${foldername}")
     dslFactory.job("repo-sync/${foldername}/${reponame}") {
       triggers {
