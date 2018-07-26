@@ -1,3 +1,5 @@
+import common.BuildJob
+
 BuildJob.sync(this, 'banner/pages', 'alumni')
 BuildJob.sync(this, 'banner/pages', 'arsys')
 BuildJob.sync(this, 'banner/pages', 'base')

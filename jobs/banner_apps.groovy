@@ -1,7 +1,5 @@
-BuildJob.sync(this, 'banner/apps', 'application_navigator_app')
-BuildJob.sync(this, 'banner/apps', 'banner_communication_management_ssb_app')
-BuildJob.sync(this, 'banner/apps', 'banner_document_management_api_app')
-BuildJob.sync(this, 'banner/apps', 'banner_employee_profile_ssb_app')
+import common.BuildJob
+
 BuildJob.sync(this, 'banner/apps', 'banner_employee_ssb_app')
 BuildJob.sync(this, 'banner/apps', 'banner_extensibility')
 BuildJob.sync(this, 'banner/apps', 'banner_faculty_attendance_tracking_ssb_app')

@@ -1,3 +1,5 @@
+import common.BuildJob
+
 BuildJob.sync(this, 'mobile', 'EllucianGO')
 BuildJob.sync(this, 'mobile', 'MobileServer')
 BuildJob.sync(this, 'mobile', 'ms-configuration-core')

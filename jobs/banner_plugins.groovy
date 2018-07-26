@@ -1,3 +1,5 @@
+import common.BuildJob
+
 BuildJob.sync(this, 'banner/plugins', 'banner-api')
 BuildJob.sync(this, 'banner/plugins', 'banner-restful-api-support')
 BuildJob.sync(this, 'banner/plugins', 'banner_accountsreceivable_common')
