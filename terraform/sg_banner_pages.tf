@@ -5,11 +5,11 @@ resource "gitlab_group" "ellucian_banner_pages" {
   description      = "The source repo from ellucian_banner_pages"
 }
 
-module "banner_pages_alumni" {
-  source       = "module/project"
-  namespace_id = "${gitlab_group.ellucian_banner_pages.id}"
-  name         = "alumni"
-}
+# module "banner_pages_alumni" {
+#  source       = "module/project"
+#  namespace_id = "${gitlab_group.ellucian_banner_pages.id}"
+#  name         = "alumni"
+# }
 
 module "banner_pages_arsys" {
   source       = "module/project"
