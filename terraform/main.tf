@@ -9,8 +9,7 @@ terraform {
     bucket = "c4po-tfxXX"
     key    = "gbc/gitlab.tfstate"
     region = "us-east-1"
-access_key ="AKIAXXXXXXXX"
-
-secret_key ="H7taL2SXXXXXXXXXX"
+    access_key ="AKIAXXXXXXXX"
+    secret_key ="H7taL2SXXXXXXXXXX"
   }
 }
