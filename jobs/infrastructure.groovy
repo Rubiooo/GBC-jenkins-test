@@ -1,6 +1,6 @@
 folder('infrastructure')
 
-pipelineJob('infrastructure/gitlab') {
+pipelineJob('infrastructure/bitbucket') {
     definition {
         cpsScm {
             scm {
