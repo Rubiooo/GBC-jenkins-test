@@ -9,7 +9,5 @@ pipelineJob('infrastructure/gitlab') {
             scriptPath("pipelines/gitlab.groovy")
         }
     }
-    configure {
-        it / definition / lightweight(true)
-    }
+    
 }

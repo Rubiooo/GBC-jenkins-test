@@ -4,7 +4,12 @@ node {
 
     timestamps {
         stage("prepare env") {
-            checkout scm
+            //checkout scm
+            checkout([$class: 'GitSCM',
+            branches: [[name: 'master']],
+            userRemoteConfigs: [[url: 'ssh://git@gitrepo.georgebrown.ca:2222/devops/jenkins-dsl.git']]
+            ])
+
             sh "docker pull ${terraformImage}"
         }
 
