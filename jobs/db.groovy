@@ -20,9 +20,14 @@ job("db/poc-migrate") {
     steps {
         shell('''
 export FLYWAYIMAGE=boxfuse/flyway
-docker run -t --rm -e FLYWAY_CONFIG_FILES=conf/${env}.conf -v ${WORKSPACE}/sql:/flyway/sql -v ${WORKSPACE}/conf:/flyway/conf ${FLYWAYIMAGE} info
-if [[ $dryrun == false ]]; then
+
+if [[ $dryrun == true ]]; then
+    docker run -t --rm -e FLYWAY_CONFIG_FILES=conf/${env}.conf -v ${WORKSPACE}/sql:/flyway/sql -v ${WORKSPACE}/conf:/flyway/conf ${FLYWAYIMAGE} info
+
+else
+    docker run -t --rm -e FLYWAY_CONFIG_FILES=conf/${env}.conf -v ${WORKSPACE}/sql:/flyway/sql -v ${WORKSPACE}/conf:/flyway/conf ${FLYWAYIMAGE} info
     docker run -t --rm -e FLYWAY_CONFIG_FILES=conf/${env}.conf -v ${WORKSPACE}/sql:/flyway/sql -v ${WORKSPACE}/conf:/flyway/conf ${FLYWAYIMAGE} migrate
+    docker run -t --rm -e FLYWAY_CONFIG_FILES=conf/${env}.conf -v ${WORKSPACE}/sql:/flyway/sql -v ${WORKSPACE}/conf:/flyway/conf ${FLYWAYIMAGE} info
 fi
         ''')
 
