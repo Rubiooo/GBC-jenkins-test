@@ -13,18 +13,17 @@ job("db/poc-migrate") {
 
 
     parameters {
-        choiceParam('env',["dev","qa","prod"])
-        booleanParam('dryrun', true)
+        choiceParam('env',["dev","qa","prod"], "environment name?")
+        booleanParam('dryrun', true, "dry run?")
     }
 
     steps {
         shell('''
-            export FLYWAYIMAGE=boxfuse/flyway
-            docker run -t --rm -e FLYWAY_CONFIG_FILES=${env}.conf -v ${WORKSPACE}/sql:/flyway/sql -v ${WORKSPACE}/conf:/flyway/conf ${FLYWAYIMAGE} info
-            if [[ $dryrun == false ]]; then
-                docker run -t --rm -e FLYWAY_CONFIG_FILES=${env}.conf -v ${WORKSPACE}/sql:/flyway/sql -v ${WORKSPACE}/conf:/flyway/conf ${FLYWAYIMAGE} migrate
-            fi
-
+export FLYWAYIMAGE=boxfuse/flyway
+docker run -t --rm -e FLYWAY_CONFIG_FILES=conf/${env}.conf -v ${WORKSPACE}/sql:/flyway/sql -v ${WORKSPACE}/conf:/flyway/conf ${FLYWAYIMAGE} info
+if [[ $dryrun == false ]]; then
+    docker run -t --rm -e FLYWAY_CONFIG_FILES=conf/${env}.conf -v ${WORKSPACE}/sql:/flyway/sql -v ${WORKSPACE}/conf:/flyway/conf ${FLYWAYIMAGE} migrate
+fi
         ''')
 
     }
