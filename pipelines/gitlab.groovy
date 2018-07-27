@@ -4,17 +4,15 @@ node {
 
     timestamps {
         stage("prepare env") {
-            //checkout scm
-            checkout([$class: 'GitSCM',
-            branches: [[name: 'master']],
-            userRemoteConfigs: [[url: 'ssh://git@gitrepo.georgebrown.ca:2222/devops/jenkins-dsl.git']]
-            ])
+            checkout scm
 
             sh "docker pull ${terraformImage}"
         }
 
         stage ("run terraform") {
-            sh "docker run -t --rm -v ${WORKSPACE}:/app ${terraformImage} terraform init"
+            
+            sh "docker run -t --rm -v ${WORKSPACE}/terraform:/app ${terraformImage} terraform init"
+            sh "docker run -t --rm -v ${WORKSPACE}/terraform:/app ${terraformImage} terraform plan"
         }
 
     }
