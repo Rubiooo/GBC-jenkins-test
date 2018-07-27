@@ -20,7 +20,8 @@ job("db/poc-migrate") {
 
     steps {
         shell('''
-export FLYWAYIMAGE=boxfuse/flyway
+export FLYWAYIMAGE=boxfuse/flyway:5-alpine
+
 if [[ "$target" != "" ]]; then
     export FLYWAYTARGET="-e FLYWAY_TARGET=$target"
 fi
