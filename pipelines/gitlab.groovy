@@ -10,9 +10,10 @@ node {
         }
 
         stage ("run terraform") {
-            
+
             sh "docker run -t --rm -v ${WORKSPACE}/terraform:/app ${terraformImage} terraform init"
             sh "docker run -t --rm -v ${WORKSPACE}/terraform:/app ${terraformImage} terraform plan"
+            sh "docker run -t --rm -v ${WORKSPACE}/terraform:/app ${terraformImage} terraform apply"
         }
 
     }
