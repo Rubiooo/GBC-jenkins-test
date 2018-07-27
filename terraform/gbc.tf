@@ -9,7 +9,7 @@ resource "gitlab_group" "gbc" {
 resource "gitlab_project" "db-migration" {
   name             = "db-migration"
   description      = "The source repo from GBC DB migration"
-  namespace_id     = "${gitlab_group.db-migration.id}"
+  namespace_id     = "${gitlab_group.gbc.id}"
   issues_enabled   = false
   wiki_enabled     = false
   snippets_enabled = false
