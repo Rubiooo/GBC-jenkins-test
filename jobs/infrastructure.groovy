@@ -4,10 +4,10 @@ pipelineJob('infrastructure/gitlab') {
     definition {
         cpsScm {
             scm {
-                git('ssh://git@gitrepo.georgebrown.ca:2222/devops/jenkins-dsl.git', 'master')
+                git('ssh://git@gitrepo.georgebrown.ca:7999/devops/jenkins-dsl.git', 'master')
             }
-            scriptPath("pipelines/gitlab.groovy")
+            scriptPath("pipelines/bitbucket.groovy")
         }
     }
-    
+
 }
