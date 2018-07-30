@@ -33,7 +33,7 @@ node {
 'banner_apps_banner_student_ssb_app',
 ]
             repos.each{ repo ->
-                sh 'curl -k -X POST -v -u usernameXXX:passwordXXX -H \"Content-Type: application/json\" https://gitrepo.georgebrown.ca/rest/api/1.0/projects/EL/repos  -d \"{\"name\": \"$repo\",\"scmId\": \"git\" }\"' 
+                sh /curl -k -X POST -v -u usernameXXX:passwordXXX -H \"Content-Type: application/json\" https://gitrepo.georgebrown.ca/rest/api/1.0/projects/EL/repos  -d \"{\"name\": \"$repo\",\"scmId\": \"git\" }\"/
 
 
             }
