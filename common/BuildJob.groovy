@@ -12,7 +12,7 @@ class BuildJob {
         shell(""" echo ${reponame}
 rm -rf ${foldername}_${reponame}
 git clone ssh://git@gitrepo.georgebrown.ca:7999/el/${foldername}_${reponame}.git
-cd ${reponame}
+cd ${foldername}_${reponame}
 git remote add upstream ssh://git@source.ellucian.com/${repofolder}/${reponame}.git
 git fetch upstream
 git merge upstream/master
