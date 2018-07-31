@@ -33,7 +33,7 @@ node {
 'banner_apps_banner_student_ssb_app',
 ]
 
-def backslash = /\\ /.trim()
+def backslash = /\\"/.trim()
 def test='curl -k -X POST -u usernameXXX:passwordXXX -H "Content-Type: application/json" https://gitrepo.georgebrown.ca/rest/api/1.0/projects/EL/repos  -d "{'+backslash+'"name'+backslash+'": '+backslash+'"abc'+backslash+'",'+backslash+'"scmId'+backslash+'": '+backslash+'"git'+backslash+'" }" '
 println test
 sh (script:test)
