@@ -33,14 +33,15 @@ node {
 'banner_apps_banner_student_ssb_app',
 ]
 
-def test='curl -k -X POST -v -u admin:Deloitt2 -H "Content-Type: application/json" https://gitrepo.georgebrown.ca/rest/api/1.0/projects/EL/repos  -d "{\"name\": \"abc\",\"scmId\": \"git\" }" '
-sh "$test"
-            repos.each{ repo ->
-                def command = /curl -k -X POST -v -u usernameXXX:passwordXXX -H "Content-Type: application\/json" https:\/\/gitrepo.georgebrown.ca\/rest\/api\/1.0\/projects\/EL\/repos  -d "{\\"name\\": \\"$repo\\",\\"scmId\\": \\"git\\" }"/
-                print command
-                sh "$command"
+def test='curl -k -X POST -u usernameXXX:passwordXXX -H "Content-Type: application/json" https://gitrepo.georgebrown.ca/rest/api/1.0/projects/EL/repos  -d "{\"name\": \"abc\",\"scmId\": \"git\" }" '
+println test
+sh (script:test)
+            // repos.each{ repo ->
+            //    def command = /curl -k -X POST -v -u usernameXXX:passwordXXX -H "Content-Type: application\/json" https:\/\/gitrepo.georgebrown.ca\/rest\/api\/1.0\/projects\/EL\/repos  -d "{\\"name\\": \\"$repo\\",\\"scmId\\": \\"git\\" }"/
+            //    print command
+            //    sh "$command"
 
-            }
+            //}
         }
     }
 
