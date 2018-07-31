@@ -10,7 +10,7 @@ class BuildJob {
       }
       steps {
         shell(""" echo ${reponame}
-rm -rf ${reponame}
+rm -rf ${foldername}_${reponame}
 git clone ssh://git@gitrepo.georgebrown.ca:7999/el/${foldername}_${reponame}.git
 cd ${reponame}
 git remote add upstream ssh://git@source.ellucian.com/${repofolder}/${reponame}.git
