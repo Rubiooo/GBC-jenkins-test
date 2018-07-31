@@ -1,7 +1,7 @@
 #!/bin/bash
 
 user=admin
-password=XXXX
+password=$1
 api=https://gitrepo.georgebrown.ca/rest/api/1.0
 
 while read -r line; do
