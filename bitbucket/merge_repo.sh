@@ -23,4 +23,5 @@ git remote add origin ${REPO_ROOT}/gbc/${PROJECT}.git
 git push -u origin master --force
 # make new commit to test timestamp msg
 # make a test again on different date format
-# another test to check date format in commit msg 
+# another test to check date format in commit msg
+# another test 
