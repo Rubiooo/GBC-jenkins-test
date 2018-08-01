@@ -21,3 +21,4 @@ git add --all
 git commit -m "Merge Commit on `date '+%Y-%m-%d %H:%M:%S'`"
 git remote add origin ${REPO_ROOT}/gbc/${PROJECT}.git
 git push -u origin master --force
+# make new commit to test timestamp msg 
