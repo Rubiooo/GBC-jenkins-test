@@ -22,5 +22,10 @@ node {
                 } catch (e) {}
             }
         }
+
+        stage('docker build') {
+            sh "curl 'https://gitrepo.georgebrown.ca/projects/GBC/repos/banner_pages_fix/raw/Dockerfile?at=refs%2Fheads%2Fmaster' -o Dockerfile"
+            sh "docker build -t banner ."
+        }
     }
 }
