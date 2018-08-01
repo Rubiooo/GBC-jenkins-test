@@ -1,0 +1,15 @@
+# Repositories, tag
+arsys, rel-arsys-9.3.6.1
+base, rel-common-9.3.11
+bdr, rel-bdr-9.3.1
+build, rel-common-9.3.11
+common, rel-common-9.3.11
+extsol, rel-bdm-9.3.1
+finance, rel-finance-9.3.6
+general, rel-general-9.3.8
+payroll, rel-payroll-9.3.6
+positioncontrol, rel-positioncontrol-9.3.6
+reports, master
+student, rel-student-9.3.10
+studentaid, rel-bsa-9.3.3
+workspace, rel-common-9.3.11
