@@ -18,7 +18,7 @@ node {
         stage('maven build') {
             withCredentials([file(credentialsId: 'mvnsettings', variable: 'MVNSETTINGS')]) {
                 try {
-                    sh "docker run -t --rm -v `pwd`:/app -v ${MVNSETTINGS}:/root/.m2/settings.xml maven:3 mvn -f /app/build/net.hedtech.banner.hr/pom.xml compile"
+                    sh "docker run -t --rm -v `pwd`:/app -v ${MVNSETTINGS}:/root/.m2/settings.xml maven:3 mvn -f /app/build/net.hedtech.banner.hr/pom.xml package"
                 } catch (e) {}
             }
         }
