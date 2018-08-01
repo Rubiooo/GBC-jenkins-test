@@ -2,11 +2,13 @@ node {
 
     timestamps {
         stage('prepare env') {
-     checkout([
+     scm=checkout([
         $class: 'GitSCM'
         branches: [[name: "master"]]
         userRemoteConfigs: [[url: 'ssh://git@gitrepo.georgebrown.ca:7999/gbc/banner_pages.git']]
      ])
+     print(scm)
+     sh ("env")
         }
 
         stage('update pom') {
@@ -24,8 +26,10 @@ node {
         }
 
         stage('docker build') {
+            sh "env"
             sh "curl 'https://gitrepo.georgebrown.ca/projects/GBC/repos/banner_pages_fix/raw/Dockerfile?at=refs%2Fheads%2Fmaster' -o Dockerfile"
-            sh "docker build -t banner ."
+            sh "docker build -t gbc/banner ."
+            sh "docker push gbc/banner"
         }
     }
 }
