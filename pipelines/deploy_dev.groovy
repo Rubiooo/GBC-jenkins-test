@@ -1,9 +1,16 @@
 node {
   def curl_login="curl -u usernamexxx:passwordxxx"
   def host=""
+  // host="ban9appnav01d.gbcdev.local"
+
   timestamps {
     stage("prepare env") {
-      host="ban9appnav01d.gbcdev.local"
+      def userInput = input(
+       id: 'userInput', message: 'choose target server', parameters: [
+       choice(choices: "ban9appnav01d.gbcdev.local", description: 'Hostname', name: 'host')
+       ])
+      echo ("Host: "+userInput)
+      host=userInput
     }
 
     stage ("stop tomcat") {
