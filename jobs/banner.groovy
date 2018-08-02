@@ -10,3 +10,14 @@ pipelineJob('banner_build/baseline') {
         }
     }
 }
+
+pipelineJob('banner_build/gbc') {
+    definition {
+        cpsScm {
+            scm {
+                git ('ssh://git@gitrepo.georgebrown.ca:7999/dev/jenkins-dsl.git', 'master')
+            }
+            scriptPath("pipelines/banner_gbc.groovy")
+        }
+    }
+}
