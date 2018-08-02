@@ -1,5 +1,5 @@
 node {
-    var curl_login="curl -u usernamexxx:passwordxxx"
+    def curl_login="curl -u usernamexxx:passwordxxx"
     timestamps {
         stage('prepare env') {
      scm=checkout([
