@@ -27,7 +27,7 @@ node {
         stage('fix_repo') {
           sh ("yes|cp -rf _fix/* .")
           //  sh ("yes|cp -rf _gbc/* .")
-        //}
+        }
 
 
         stage('maven build') {
