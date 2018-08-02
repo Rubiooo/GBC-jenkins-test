@@ -14,10 +14,19 @@ node {
                  userRemoteConfigs: [[url: 'ssh://git@gitrepo.georgebrown.ca:7999/gbc/banner_pages_fix.git']]
                  ])
            }
+
+           dir ("_gbc") {
+                checkout([
+                  $class: 'GitSCM',
+                  branches: [[name: "master"]],
+                  userRemoteConfigs: [[url: 'ssh://git@gitrepo.georgebrown.ca:7999/gbc/banner_pages_gbc.git']]
+                  ])
+          }
         }
 
         stage('fix_repo') {
           sh ("yes|cp -rf _fix/* .")
+          sh ("yes|cp -rf _gbc/* .")
         }
 
 
@@ -33,6 +42,7 @@ node {
 
             sh "docker build -t gbc/banner:${BUILD_ID} . --label 'git_commit="+scm.GIT_COMMIT+"'"
             sh "docker push gbc/banner:${BUILD_ID}"
+            sh "docker rmi gbc/banner:${BUILD_ID}"
         }        
     }
 }
