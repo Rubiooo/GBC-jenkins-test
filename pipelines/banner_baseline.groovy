@@ -7,15 +7,15 @@ node {
             branches: [[name: "master"]]
             userRemoteConfigs: [[url: 'ssh://git@gitrepo.georgebrown.ca:7999/gbc/banner_pages.git']]
          ])
-          // dir ("_fix") {
-          //     checkout([
-          //       $class: 'GitSCM',
-          //       branches: [[name: "master"]],
-          //       userRemoteConfigs: [[url: 'ssh://git@gitrepo.georgebrown.ca:7999/gbc/banner_pages_fix.git']]
-          //       ])
-          // }
+          dir ("_fix") {
+               checkout([
+                 $class: 'GitSCM',
+                 branches: [[name: "master"]],
+                 userRemoteConfigs: [[url: 'ssh://git@gitrepo.georgebrown.ca:7999/gbc/banner_pages_fix.git']]
+                 ])
+          }
 
-           // dir ("_gbc") {
+          // dir ("_gbc") {
           //      checkout([
           //        $class: 'GitSCM',
           //        branches: [[name: "master"]],
@@ -24,9 +24,9 @@ node {
           //}
         }
 
-        //stage('fix_repo') {
-          // sh ("yes|cp -rf _fix/* .")
-        //  sh ("yes|cp -rf _gbc/* .")
+        stage('fix_repo') {
+          sh ("yes|cp -rf _fix/* .")
+          //  sh ("yes|cp -rf _gbc/* .")
         //}
 
 

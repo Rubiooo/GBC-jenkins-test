@@ -17,7 +17,7 @@ node {
       sh "ssh $host \"rm -rf /u01/app/tomcat/webapps/wrksp.ws\""
       sh "scp wrksp.war $host:/u01/app/tomcat/webapps"
       sh "scp wrksp.ws.war $host:/u01/app/tomcat/webapps"
-      sh "ssh $host \"chwon tomcat:tomcat /u01/app/tomcat/webapps/*.war\""
+      sh "ssh $host \"chown tomcat:tomcat /u01/app/tomcat/webapps/*.war\""
     }
 
     stage ("start tomcat") {
