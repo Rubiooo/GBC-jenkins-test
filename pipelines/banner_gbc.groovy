@@ -2,9 +2,9 @@ def uploadBuild(String path, String filename, String timestamp) {
   def curl_login="curl -u usernamexxx:passwordxxx"
   def repo = "https://artifactory.georgebrown.ca/artifactory/generic-local"
 
-  def command = "${curl_login} -T ${path}/${filename} -O \"${repo}/build-gbc/${filename}.${timestamp}\""
+  def command = "${curl_login} -T ${path}/${filename} -O \"${repo}/build-gbc/${timestamp}/${filename}\""
   def result =  sh(returnStdout: true, script: command)
-  command = "${curl_login} -T ${path}/${filename} -O \"${repo}/build-gbc-latest/${filename}\""
+  command = "${curl_login} -T ${path}/${filename} -O \"${repo}/build-gbc/latest/${filename}\""
   result =  sh(returnStdout: true, script: command)
   return result
 }
@@ -42,6 +42,5 @@ node {
                 uploadBuild("./build/webapp-services/target", "wrksp.ws.war", timestamp)
             }
         }
-
     }
 }
