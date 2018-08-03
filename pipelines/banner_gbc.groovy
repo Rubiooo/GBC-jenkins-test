@@ -1,5 +1,17 @@
-node {
+def uploadBuild(String path, String filename) {
   def curl_login="curl -u usernamexxx:passwordxxx"
+  def repo = "https://artifactory.georgebrown.ca/artifactory/generic-local"
+  def now = new Date()
+  def timestamp = now.format("yyyyMMdd-HHmm")
+  def command = "${curl_login} -T ${path}/${filename} -O \"${repo}/build-gbc/${filename}-${timestamp}\""
+  def result =  sh(returnStdout: true, script: command)
+  command = "${curl_login} -T ${path}/${filename} -O \"${repo}/build-gbc-latest/${filename}\""
+  result =  sh(returnStdout: true, script: command)
+  return result
+}
+
+node {
+
   timestamps {
         stage('prepare env') {
          scm=checkout([
@@ -40,16 +52,6 @@ node {
             }
         }
 
-        def uploadBuild(String path, String filename) {
-          def repo = "https://artifactory.georgebrown.ca/artifactory/generic-local"
-          def now = new Date()
-          def timestamp = now.format("yyyyMMdd-HHmm")
-          def command = "${curl_login} -T ${path}/${filename} -O \"${repo}/build-gbc/${filename}-${timestamp}\""
-          def result =  sh(returnStdout: true, script: command)
-          command = "${curl_login} -T ${path}/${filename} -O \"${repo}/build-gbc-latest/${filename}\""
-          result =  sh(returnStdout: true, script: command)
-          return result
-        }
 
         // stage('docker build') {
 
