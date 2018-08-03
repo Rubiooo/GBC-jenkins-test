@@ -34,6 +34,9 @@ node {
             withCredentials([file(credentialsId: 'mvnsettings', variable: 'MVNSETTINGS')]) {
                 try {
                     sh "docker run -t --rm -v `pwd`:/app -v ${MVNSETTINGS}:/root/.m2/settings.xml -v /tmp/m2.repository/:/root/.m2/repository/ maven:3 mvn -B -f /app/build/net.hedtech.banner.hr/pom.xml clean package"
+                    sh "$curl_login -T ./workspace/webapp-workspace/target/wrksp.war -O \"https://artifactory.georgebrown.ca/artifactory/generic-local/build-${BUILD_ID}/wrksp.war\""
+                    sh "$curl_login -T ./build/webapp-services/target/wrksp.ws.war -O \"https://artifactory.georgebrown.ca/artifactory/generic-local/build-${BUILD_ID}/wrksp.ws.war\""
+
                     sh "$curl_login -T ./workspace/webapp-workspace/target/wrksp.war -O \"https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/wrksp.war\""
                     sh "$curl_login -T ./build/webapp-services/target/wrksp.ws.war -O \"https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/wrksp.ws.war\""
                 } catch (e)
