@@ -1,6 +1,6 @@
 folder('banner_build')
 
-pipelineJob('banner_build/baseline') {
+pipelineJob('banner_build/build_baseline') {
     definition {
         cpsScm {
             scm {
@@ -11,7 +11,7 @@ pipelineJob('banner_build/baseline') {
     }
 }
 
-pipelineJob('banner_build/gbc') {
+pipelineJob('banner_build/build_gbc') {
     definition {
         cpsScm {
             scm {
