@@ -1,0 +1,25 @@
+{
+  "files": [
+    {
+      "aql": {
+        "items.find": {
+          "$and": [
+            {
+              "modified": {
+
+                "$lt": "DATE"
+              }
+            },
+            {
+              "path": {
+                "$match": "build-gbc/*"
+              }
+            }
+          ],
+          "repo": "generic-local"
+        }
+      },
+      "target": "archive"
+    }
+  ]
+}
