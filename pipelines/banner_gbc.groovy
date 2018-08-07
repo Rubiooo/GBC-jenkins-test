@@ -40,6 +40,15 @@ node {
                 } catch (e)
                 uploadBuild("./workspace/webapp-workspace/target", "wrksp.war", timestamp)
                 uploadBuild("./build/webapp-services/target", "wrksp.ws.war", timestamp)
+
+                uploadBuild("./gbc-student/target", "net.hedtech.banner.gbc-student-1.0.0.jar", timestamp)
+                uploadBuild("./gbc-general/target", "net.hedtech.banner.gbc-general-1.0.0.jar", timestamp)
+                uploadBuild("./gbc-ellucian-arsys/target", "net.hedtech.banner.gbc-ellucian-arsys-1.0.0.jar", timestamp)
+                uploadBuild("./gbc-ellucian-finance/target", "net.hedtech.banner.gbc-ellucian-finance-1.0.0.jar", timestamp)
+                uploadBuild("./gbc-ellucian-general/target", "net.hedtech.banner.gbc-ellucian-general-1.0.0.jar", timestamp)
+                uploadBuild("./gbc-ellucian-positioncontrol/target", "net.hedtech.banner.gbc-ellucian-positioncontrol-1.0.0.jar", timestamp)
+                uploadBuild("./gbc-ellucian-student/target", "net.hedtech.banner.gbc-ellucian-student-1.0.0.jar", timestamp)
+                uploadBuild("./gbc-ellucian-studentaid/target", "net.hedtech.banner.gbc-ellucian-studentaid-1.0.0.jar", timestamp)
             }
         }
     }
