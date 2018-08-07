@@ -1,16 +1,17 @@
 node {
   timestamps {
-    stage("prepare env") {
+    stage("checkout repo") {
       checkout scm
     }
 
 
-    stage ("clean up") {
+    stage ("delete older than 60 days") {
       def now = new Date().plus(-60)
       def timestamp=now.format("yyyy-MM-dd")
       print (timestamp)
-      sh "ls -l"
+
       sh "sed -i s/DATE/${timestamp}/ aql/aql.json"
+      sh "jfrog rt del --spec=aql/aql.json --quiet"
     }
 
   }
