@@ -6,7 +6,7 @@ node {
     stage("choose release") {
       def prefix="generic-local/build-gbc/"
       def suffix="/wrksp.war"
-      def command = "jfrog rt s ${prefix}*${suffix}|jq '[sort_by(.path)[].path|ltrimstr(\"${prefix}\")|rtrimstr(\"${suffix}\")] - ["latest"]|.[]'"
+      def command = "jfrog rt s ${prefix}*${suffix}|jq '[sort_by(.path)[].path|ltrimstr(\"${prefix}\")|rtrimstr(\"${suffix}\")] - [\"latest\"]|.[]'"
       def releases = sh(returnStdout: true, script: command)
 
       def userInput = input(
