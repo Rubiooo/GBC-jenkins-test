@@ -23,6 +23,7 @@ node {
       sh "$curl_login -sSLO https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/latest/wrksp.ws.war"
       sh "ssh $host \"rm -rf /u01/app/tomcat/webapps/wrksp\""
       sh "ssh $host \"rm -rf /u01/app/tomcat/webapps/wrksp.ws\""
+      sh "ssh $host \"rm -rf /u01/app/tomcat/temp\""
       sh "scp wrksp.war $host:/u01/app/tomcat/webapps"
       sh "scp wrksp.ws.war $host:/u01/app/tomcat/webapps"
       sh "ssh $host \"chown tomcat:tomcat /u01/app/tomcat/webapps/*.war\""
