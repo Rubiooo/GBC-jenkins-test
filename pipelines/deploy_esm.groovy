@@ -6,7 +6,7 @@ node {
   def command
   def userInput
   def host="ban9appnav01d.gbcdev.local"
-  def package="release-Admin-gbc-9.3.11.zip"
+  def package=
   timestamps {
     stage("choose release") {
       prefix="generic-local/build-gbc/"
@@ -16,10 +16,12 @@ node {
 
       userInput = input(
        id: 'userInput', message: 'choose releases version', parameters: [
+
+       string(defaultValue: '9.3.11', description: '', name: 'version', trim: false),
        choice(choices: releases, description: '', name: 'release')
        ])
-      echo ("release: "+userInput)
-      release=userInput
+       release=userInput['release']
+       package="release-Admin-gbc-"+userInput['version']+".zip"
     }
 
     stage("choose jars") {
