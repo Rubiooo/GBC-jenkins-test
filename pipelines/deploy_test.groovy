@@ -1,5 +1,5 @@
 node {
-  def curl_login="curl -u usernamexxx:passwordxxx"
+
   def release="latest"
   def host="ban9appnav01d.gbcdev.local"
   timestamps {
@@ -23,8 +23,12 @@ node {
     }
 
     stage ("upload war file") {
-      sh "$curl_login -sSLO https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/${release}/wrksp.war"
-      sh "$curl_login -sSLO https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/${release}/wrksp.ws.war"
+      withCredentials([usernamePassword(credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+       def curl_login="curl -u $USERNAME:$PASSWORD"
+       sh "$curl_login -sSLO https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/${release}/wrksp.war"
+       sh "$curl_login -sSLO https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/${release}/wrksp.ws.war"
+     }
+
       sh "ssh $host \"rm -rf /u01/app/tomcat/webapps/wrksp\""
       sh "ssh $host \"rm -rf /u01/app/tomcat/webapps/wrksp.ws\""
       sh "scp wrksp.war $host:/u01/app/tomcat/webapps"

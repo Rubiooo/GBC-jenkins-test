@@ -1,5 +1,5 @@
 node {
-  def curl_login="curl -u admin:admin@gbc"
+
   def release
   def prefix
   def suffix
@@ -26,7 +26,7 @@ node {
       prefix="generic-local/build-gbc/"+release+"/"
       command = "jfrog rt s ${prefix}*.jar|jq -r '.[].path|ltrimstr(\"${prefix}\")'"
       def jars = sh(returnStdout: true, script: command)
-
+      def jarlist=[]
       for (jar in jars.split('\n')){
         jarlist.add(booleanParam(defaultValue: false, description: '', name: jar))
       }
@@ -35,20 +35,23 @@ node {
       sh "rm -rf BannerAdmin"
       def targetFolder="BannerAdmin/ext/WEB-INF/lib"
       sh "mkdir -p ${targetFolder}"
-      for (jar in jars.split('\n')){
-        if (userInput[jar]) {
-          print (jar)
-          command="${curl_login} -sSL https://artifactory.georgebrown.ca/artifactory/${prefix}${jar} -o ${targetFolder}/${jar}"
-          sh(returnStdout: true, script: command)
+
+      withCredentials([usernamePassword(credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+        def curl_login="curl -u $USERNAME:$PASSWORD"
+        for (jar in jars.split('\n')){
+          if (userInput[jar]) {
+            print (jar)
+            command="${curl_login} -sSL https://artifactory.georgebrown.ca/artifactory/${prefix}${jar} -o ${targetFolder}/${jar}"
+            sh(returnStdout: true, script: command)
+          }
         }
       }
-
     }
 
     stage ("package zip file") {
-        sh "rm -f $package"
-        sh "zip -r $package BannerAdmin"
-        sh "scp $package $host:/tmp"
+      sh "rm -f $package"
+      sh "zip -r $package BannerAdmin"
+      sh "scp $package $host:/tmp"
     }
   }
 }
