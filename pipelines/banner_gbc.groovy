@@ -36,6 +36,10 @@
               }
 
             stage('maven build') {
+                def now = new Date()
+                def timestamp=now.format("yyyyMMdd-HHmm")
+                slackSend (channel: 'jenkins', message: "start building Admin Page on version " + timestamp)
+
                 withCredentials([file(credentialsId: 'mvnsettings', variable: 'MVNSETTINGS')]) {
 
                     sh "docker run -t --rm -v `pwd`:/app -v ${MVNSETTINGS}:/root/.m2/settings.xml -v /tmp/m2.repository/:/root/.m2/repository/ maven:3 mvn -B -f /app/build/net.hedtech.banner.hr/pom.xml clean package"
@@ -53,9 +57,8 @@
                     uploadBuild("./gbc-ellucian-student/target", "net.hedtech.banner.gbc-ellucian-student-*.jar", timestamp)
                     uploadBuild("./gbc-ellucian-studentaid/target", "net.hedtech.banner.gbc-ellucian-studentaid-*.jar", timestamp)
 
-
-
                 }
+                slackSend (channel: 'jenkins', message: "Finish building Admin Page and upload to https://artifactory.georgebrown.ca/artifactory/generic-local/ " + timestamp)
             }
         }
     }
