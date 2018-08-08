@@ -24,7 +24,7 @@
                 dir ("_gbc") {
                     checkout([
                       $class: 'GitSCM',
-                      branches: [[name: "version"]],
+                      branches: [[name: "master"]],
                       userRemoteConfigs: [[url: 'ssh://git@gitrepo.georgebrown.ca:7999/gbc/banner_pages_gbc.git']]
                       ])
               }
