@@ -50,6 +50,7 @@
 
                     uploadBuild("./gbc-student/target", "net.hedtech.banner.gbc-student-*.jar", timestamp)
                     uploadBuild("./gbc-general/target", "net.hedtech.banner.gbc-general-*.jar", timestamp)
+                    uploadBuild("./gbc-payroll/target", "net.hedtech.banner.gbc-payroll-*.jar", timestamp)
                     uploadBuild("./gbc-ellucian-arsys/target", "net.hedtech.banner.gbc-ellucian-arsys-*.jar", timestamp)
                     uploadBuild("./gbc-ellucian-finance/target", "net.hedtech.banner.gbc-ellucian-finance-*.jar", timestamp)
                     uploadBuild("./gbc-ellucian-general/target", "net.hedtech.banner.gbc-ellucian-general-*.jar", timestamp)
