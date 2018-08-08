@@ -29,10 +29,8 @@ node {
       for (jar in jars.split('\n')){
         print "jar-> " + jar
       }
-    input message: 'choose jars', parameters: [
-    booleanParam(defaultValue: false, description: '', name: 'j1'),
-    booleanParam(defaultValue: false, description: '', name: 'j2')
-    ]
+    input message: 'choose jars', parameters: jarlist
+
     }
 
     stage ("package zip file") {
