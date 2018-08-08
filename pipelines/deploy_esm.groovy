@@ -25,11 +25,17 @@ node {
       prefix="generic-local/build-gbc/"+release+"/"
       command = "jfrog rt s ${prefix}*.jar|jq -r '.[].path|ltrimstr(\"${prefix}\")'"
       def jars = sh(returnStdout: true, script: command)
-      print (jars)
+
       for (jar in jars.split('\n')){
-        print "jar-> " + jar
+        jarlist.add(booleanParam(defaultValue: false, description: '', name: jar))
       }
-    input message: 'choose jars', parameters: jarlist
+      userInput= input (message: 'choose jars', parameters: jarlist)
+      print(userInput)
+      for (jar in jars.split('\n')){
+        if (userInput[jar]) {
+          print (jar)
+        }
+      }
 
     }
 
