@@ -1,12 +1,3 @@
-    def createFolder(String timestamp){
-      def curl_login="curl -u usernamexxx:passwordxxx"
-      def repo = "https://artifactory.georgebrown.ca/artifactory/generic-local"
-      def command = "${curl_login} -T version -O \"${repo}/build-gbc/${timestamp}/version\""
-      def result =  sh(returnStdout: true, script: command)
-      command = "${curl_login} -T version -O \"${repo}/build-gbc/latest/version\""
-      result =  sh(returnStdout: true, script: command)
-      return result
-    }
 
 
     def uploadBuild(String path, String filename, String timestamp) {
@@ -49,8 +40,6 @@
 
                     sh "docker run -t --rm -v `pwd`:/app -v ${MVNSETTINGS}:/root/.m2/settings.xml -v /tmp/m2.repository/:/root/.m2/repository/ maven:3 mvn -B -f /app/build/net.hedtech.banner.hr/pom.xml clean package"
 
-                    sh "echo $timestamp > version"
-                    createFolder(timestamp)
 
                     uploadBuild("./workspace/webapp-workspace/target", "wrksp.war", timestamp)
                     uploadBuild("./build/webapp-services/target", "wrksp.ws.war", timestamp)
