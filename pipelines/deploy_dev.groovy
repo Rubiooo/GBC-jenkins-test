@@ -30,7 +30,7 @@ node {
 
     stage ("start tomcat") {
       sh "ssh $host \"sudo -u tomcat /u01/app/tomcat/bin/startup.sh\""
-      slackSend (channel: 'jenkins', message: ":ballot_box_with_check:Finish deploy Admin Page to " + host)
+      slackSend (channel: 'jenkins', message: ":ballot_box_with_check: Finish deploy Admin Page to " + host)
     }
   }
 }

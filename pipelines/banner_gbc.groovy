@@ -38,7 +38,7 @@
             stage('maven build') {
                 def now = new Date()
                 def timestamp=now.format("yyyyMMdd-HHmm")
-                slackSend (channel: 'jenkins', message: "start building Admin Page on version " + timestamp)
+                slackSend (channel: 'jenkins', message: ":black_square_button: start building Admin Page on version " + timestamp)
 
                 withCredentials([file(credentialsId: 'mvnsettings', variable: 'MVNSETTINGS')]) {
 
@@ -58,7 +58,7 @@
                     uploadBuild("./gbc-ellucian-studentaid/target", "net.hedtech.banner.gbc-ellucian-studentaid-*.jar", timestamp)
 
                 }
-                slackSend (channel: 'jenkins', message: "Finish building Admin Page and upload to https://artifactory.georgebrown.ca/artifactory/generic-local/ " + timestamp)
+                slackSend (channel: 'jenkins', message: ":ballot_box_with_check: Finish building Admin Page and upload to https://artifactory.georgebrown.ca/artifactory/generic-local/ " + timestamp)
             }
         }
     }
