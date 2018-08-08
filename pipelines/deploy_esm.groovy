@@ -10,7 +10,7 @@ node {
     stage("choose release") {
       prefix="generic-local/build-gbc/"
       suffix="/wrksp.war"
-      command = "jfrog rt s ${prefix}*${suffix}|jq '[sort_by(.path)[].path|ltrimstr(\"${prefix}\")|rtrimstr(\"${suffix}\")] - [\"latest\"]|reverse|.[]'"
+      command = "jfrog rt s ${prefix}*${suffix}|jq -r '[sort_by(.path)[].path|ltrimstr(\"${prefix}\")|rtrimstr(\"${suffix}\")] - [\"latest\"]|reverse|.[]'"
       def releases = sh(returnStdout: true, script: command)
 
       userInput = input(
@@ -23,7 +23,7 @@ node {
 
     stage("choose jars") {
       prefix="generic-local/build-gbc/"+release+"/"
-      command = "jfrog rt s ${prefix}*.jar|jq '.[].path|ltrimstr(\"${prefix}\")'"
+      command = "jfrog rt s ${prefix}*.jar|jq -r '.[].path|ltrimstr(\"${prefix}\")'"
       def jars = sh(returnStdout: true, script: command)
       print (jars)
       for (jar in jars){
