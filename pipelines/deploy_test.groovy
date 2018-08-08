@@ -18,6 +18,7 @@ node {
     }
 
     stage ("stop tomcat") {
+      slackSend (channel: 'jenkins', message: ":black_square_button: Start deploy Admin Page to " + host + " with version " + release)
       sh "ssh $host \"sudo -u tomcat /u01/app/tomcat/bin/shutdown.sh\""
     }
 
@@ -33,6 +34,8 @@ node {
 
     stage ("start tomcat") {
       sh "ssh $host \"sudo -u tomcat /u01/app/tomcat/bin/startup.sh\""
+      slackSend (channel: 'jenkins', message: ":ballot_box_with_check:Finish deploy Admin Page to " + host + " with version " + release)
+
     }
   }
 }
