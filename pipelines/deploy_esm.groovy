@@ -47,6 +47,7 @@ node {
     stage ("package zip file") {
 
       sh "zip -r release-Admin-gbc-9.3.11.zip BannerAdmin"
+      sh "scp release-Admin-gbc-9.3.11.zip $host:/tmp"
     }
 
   }
