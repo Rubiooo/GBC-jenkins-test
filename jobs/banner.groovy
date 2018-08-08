@@ -12,6 +12,9 @@ pipelineJob('banner_build/build_baseline') {
 }
 
 pipelineJob('banner_build/build_gbc') {
+    triggers {
+        corn('H 16 * * *')
+    }
     definition {
         cpsScm {
             scm {
