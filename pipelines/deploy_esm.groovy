@@ -6,7 +6,7 @@ node {
   def command
   def userInput
   def host="ban9appnav01d.gbcdev.local"
-  def package
+  def package=""
   timestamps {
     stage("choose release") {
       prefix="generic-local/build-gbc/"
