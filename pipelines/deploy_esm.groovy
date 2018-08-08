@@ -31,11 +31,13 @@ node {
       }
       userInput= input (message: 'choose jars', parameters: jarlist)
       print(userInput)
-      sh "ls -l"
+      sh "rm -rf BannerAdmin"
+      def targetFolder="BannerAdmin/ext/WEB-INF/lib"
+      sh "mkdir -p ${targetFolder}"
       for (jar in jars.split('\n')){
         if (userInput[jar]) {
           print (jar)
-          command="${curl_login} -sSLO https://artifactory.georgebrown.ca/artifactory/${prefix}${jar}"
+          command="${curl_login} -sSL https://artifactory.georgebrown.ca/artifactory/${prefix}${jar} -o ${targetFolder}/${jar}"
           sh(returnStdout: true, script: command)
         }
       }
@@ -44,7 +46,7 @@ node {
 
     stage ("package zip file") {
 
-      sh "ls -l"
+      sh "zip -r release-Admin-gbc-9.3.11.zip BannerAdmin"
     }
 
   }
