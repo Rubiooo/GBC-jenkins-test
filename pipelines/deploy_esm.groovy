@@ -31,15 +31,20 @@ node {
       }
       userInput= input (message: 'choose jars', parameters: jarlist)
       print(userInput)
+      sh "ls -l"
       for (jar in jars.split('\n')){
         if (userInput[jar]) {
           print (jar)
+          command="${curl_login} -sSLO https://artifactory.georgebrown.ca/artifactory/${prefix}${jar}"
+          sh(returnStdout: true, script: command)
         }
       }
 
     }
 
     stage ("package zip file") {
+
+      sh "ls -l"
     }
 
   }
