@@ -13,9 +13,9 @@
       def curl_login="curl -u usernamexxx:passwordxxx"
       def repo = "https://artifactory.georgebrown.ca/artifactory/generic-local"
 
-      def command = "${curl_login} -T ${path}/${filename} -O \"${repo}/build-gbc/${timestamp}/\""
+      def command = "${curl_login} -T ${path}/${filename} \"${repo}/build-gbc/${timestamp}/\""
       def result =  sh(returnStdout: true, script: command)
-      command = "${curl_login} -T ${path}/${filename} -O \"${repo}/build-gbc/latest/\""
+      command = "${curl_login} -T ${path}/${filename} \"${repo}/build-gbc/latest/\""
       result =  sh(returnStdout: true, script: command)
       return result
     }
@@ -51,7 +51,7 @@
 
                     sh "echo $timestamp > version"
                     createFolder(timestamp)
-                    
+
                     uploadBuild("./workspace/webapp-workspace/target", "wrksp.war", timestamp)
                     uploadBuild("./build/webapp-services/target", "wrksp.ws.war", timestamp)
 
