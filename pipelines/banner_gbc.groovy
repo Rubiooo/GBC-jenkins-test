@@ -1,7 +1,10 @@
 
 
     def uploadBuild(String path, String filename, String timestamp) {
-      def curl_login="curl -u usernamexxx:passwordxxx"
+
+      withCredentials([usernamePassword(credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+
+      def curl_login="curl -u $USERNAME:$PASSWORD"
       def repo = "https://artifactory.georgebrown.ca/artifactory/generic-local"
 
       def command = "${curl_login} -T ${path}/${filename} \"${repo}/build-gbc/${timestamp}/\""
