@@ -6,6 +6,7 @@ node {
   def command
   def userInput
   def host="ban9appnav01d.gbcdev.local"
+  def package="release-Admin-gbc-9.3.11.zip"
   timestamps {
     stage("choose release") {
       prefix="generic-local/build-gbc/"
@@ -45,10 +46,9 @@ node {
     }
 
     stage ("package zip file") {
-
-      sh "zip -r release-Admin-gbc-9.3.11.zip BannerAdmin"
-      sh "scp release-Admin-gbc-9.3.11.zip $host:/tmp"
+        sh "rm -f $package"
+        sh "zip -r $package BannerAdmin"
+        sh "scp $package $host:/tmp"
     }
-
   }
 }
