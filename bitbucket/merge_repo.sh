@@ -21,3 +21,6 @@ git add --all
 git commit -m "Merge Commit on `date '+%Y-%m-%d %H:%M:%S'`"
 git remote add origin ${REPO_ROOT}/gbc/${PROJECT}.git
 git push -u origin master --force
+
+curl -u usernamexxx:passwordxxx "https://gitrepo.georgebrown.ca/rest/api/latest/projects/GBC/repos/banner_pages/archive?format=zip" -o baseline.zip
+curl -u usernamexxx:passwordxxx -T baseline.zip https://artifactory.georgebrown.ca/artifactory/generic-local/banner/
