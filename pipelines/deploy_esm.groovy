@@ -26,7 +26,7 @@ node {
       command = "jfrog rt s ${prefix}*.jar|jq -r '.[].path|ltrimstr(\"${prefix}\")'"
       def jars = sh(returnStdout: true, script: command)
       print (jars)
-      for (jar in jars){
+      for (jar in jars.split('\n')){
         print "jar-> " + jar
       }
     input message: 'choose jars', parameters: [
