@@ -3,7 +3,7 @@ node {
   def release
   def prefix
   def suffix
-  def package
+  def packageName
   def command
   def userInput
   def host="ban9appnav01d.gbcdev.local"
@@ -22,7 +22,7 @@ node {
        choice(choices: releases, description: '', name: 'release')
        ])
        release=userInput['release']
-       package="release-Admin-gbc-"+userInput['version']+".zip"
+       packageName="release-Admin-gbc-"+userInput['version']+".zip"
     }
 
     stage("choose jars") {
@@ -52,9 +52,9 @@ node {
     }
 
     stage ("package zip file") {
-      sh "rm -f $package"
-      sh "zip -r $package BannerAdmin"
-      sh "scp $package $host:/tmp"
+      sh "rm -f $packageName"
+      sh "zip -r $packageName BannerAdmin"
+      sh "scp $packageName $host:/tmp"
     }
   }
 }
