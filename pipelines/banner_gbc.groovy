@@ -42,9 +42,10 @@
                 def now = new Date()
                 def timestamp=now.format("yyyyMMdd-HHmm")
                 wrap([$class: 'BuildUser']) {
-                    slackSend (channel: 'jenkins', message: ":black_square_button: ${BuildUser} start building Admin Page on version " + timestamp)
+                    def slackMessage = ":black_square_button: "+ env.BUILD_USER +" start building Admin Page on version " + timestamp)"
+                    slackSend (channel: 'jenkins', message: slackMessage)
                 }
-                
+
                 try {
                   withCredentials([file(credentialsId: 'mvnsettings', variable: 'MVNSETTINGS')]) {
                     sh "docker run -t --rm -v `pwd`:/app -v ${MVNSETTINGS}:/root/.m2/settings.xml -v /tmp/m2.repository/:/root/.m2/repository/ maven:3 mvn -B -f /app/build/net.hedtech.banner.hr/pom.xml clean package"
