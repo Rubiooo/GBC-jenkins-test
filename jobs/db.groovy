@@ -11,14 +11,15 @@ pipelineJob('db/load_script') {
     definition {
         cpsScm {
             scm {
-                git('ssh://git@gitrepo.georgebrown.ca:7999/gbc/gbcbanner.git', 'master')
+                git('ssh://git@gitrepo.georgebrown.ca:7999/dev/jenkins-dsl.git', 'master')
+
             }
-            scriptPath("build.groovy")
+            scriptPath("pipelines/database/load.groovy")
         }
     }
 }
 
-pipelineJob('db/promote_scripts') {
+pipelineJob('db/promote_script') {
     logRotator(2, 10, -1, -1)
     authorization {
       permissionAll('M180xxx') //Max
@@ -27,9 +28,10 @@ pipelineJob('db/promote_scripts') {
     definition {
         cpsScm {
             scm {
-                git('ssh://git@gitrepo.georgebrown.ca:7999/gbc/gbcbanner.git', 'master')
+                git('ssh://git@gitrepo.georgebrown.ca:7999/dev/jenkins-dsl.git', 'master')
+
             }
-            scriptPath("promote.groovy")
+            scriptPath("pipelines/database/promote.groovy")
         }
     }
 }
