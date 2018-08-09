@@ -3,10 +3,11 @@ node {
   def release
   def prefix
   def suffix
+  def package
   def command
   def userInput
   def host="ban9appnav01d.gbcdev.local"
-  def package=""
+
   timestamps {
     stage("choose release") {
       prefix="generic-local/build-gbc/"
