@@ -1,12 +1,7 @@
 folder('db')
 
 pipelineJob('db/load_script') {
-    configure { project ->
-        project << logRotator {
-            daysToKeep(-1)
-            numToKeep(10)
-        }
-    }
+    clogRotator(2, 10, -1, -1)
 
     definition {
         cpsScm {
@@ -19,12 +14,8 @@ pipelineJob('db/load_script') {
 }
 
 pipelineJob('db/promote_scripts') {
-    configure { project ->
-        project << logRotator {
-            daysToKeep(-1)
-            numToKeep(10)
-        }
-    }
+    logRotator(2, 10, -1, -1)
+    
     definition {
         cpsScm {
             scm {
