@@ -48,7 +48,7 @@
                   }
                 } catch (Exception e) {
                     slackSend (channel: 'jenkins', message: ":bangbang: @channel Build failed, please check ${BUILD_URL}")
-                    currentBuild.result = 'ABORTED'
+                    currentBuild.result = 'FAILURE'
                     error('Build failure')
                 }
 
