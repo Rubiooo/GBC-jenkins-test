@@ -47,7 +47,7 @@
                     sh "docker run -t --rm -v `pwd`:/app -v ${MVNSETTINGS}:/root/.m2/settings.xml -v /tmp/m2.repository/:/root/.m2/repository/ maven:3 mvn -B -f /app/build/net.hedtech.banner.hr/pom.xml clean package"
                   }
                 } catch (Exception e) {
-                    slackSend (channel: 'jenkins', message: ":bangbang: Build failed")
+                    slackSend (channel: 'jenkins', message: ":bangbang: @channel Build failed, please check ${BUILD_URL}")
                     currentBuild.result = 'ABORTED'
                     error('Build failure')
                 }
@@ -67,7 +67,7 @@
                 uploadBuild("./gbc-ellucian-student/target", "net.hedtech.banner.gbc-ellucian-student-*.jar", timestamp)
                 uploadBuild("./gbc-ellucian-studentaid/target", "net.hedtech.banner.gbc-ellucian-studentaid-*.jar", timestamp)
 
-                
+
                 slackSend (channel: 'jenkins', message: ":ballot_box_with_check: Finish building Admin Page and upload to https://artifactory.georgebrown.ca/artifactory/generic-local/ " + timestamp)
             }
         }
