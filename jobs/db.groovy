@@ -3,8 +3,8 @@ folder('db')
 pipelineJob('db/load_script') {
     clogRotator(2, 10, -1, -1)
     authorization {
-       permission(Permissions.ItemConfigure, 'M18012201')
-       permission(Permissions.RunDelete, 'M18012201')
+       permissionAll('M180xxx') //Max
+       permissionAll('50xxx') //Ibrah
    }
 
 
@@ -21,8 +21,8 @@ pipelineJob('db/load_script') {
 pipelineJob('db/promote_scripts') {
     logRotator(2, 10, -1, -1)
     authorization {
-       permission(Permissions.ItemConfigure, 'M18012201')
-       permission(Permissions.RunDelete, 'M18012201')
+      permissionAll('M180xxx') //Max
+      permissionAll('50xxx') //Ibrah
     }
     definition {
         cpsScm {
