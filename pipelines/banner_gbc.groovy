@@ -42,27 +42,32 @@
                 def now = new Date()
                 def timestamp=now.format("yyyyMMdd-HHmm")
                 slackSend (channel: 'jenkins', message: ":black_square_button: start building Admin Page on version " + timestamp)
-
-                withCredentials([file(credentialsId: 'mvnsettings', variable: 'MVNSETTINGS')]) {
-
+                try {
+                  withCredentials([file(credentialsId: 'mvnsettings', variable: 'MVNSETTINGS')]) {
                     sh "docker run -t --rm -v `pwd`:/app -v ${MVNSETTINGS}:/root/.m2/settings.xml -v /tmp/m2.repository/:/root/.m2/repository/ maven:3 mvn -B -f /app/build/net.hedtech.banner.hr/pom.xml clean package"
-
-
-                    uploadBuild("./workspace/webapp-workspace/target", "wrksp.war", timestamp)
-                    uploadBuild("./build/webapp-services/target", "wrksp.ws.war", timestamp)
-
-                    uploadBuild("./gbc-student/target", "net.hedtech.banner.gbc-student-*.jar", timestamp)
-                    uploadBuild("./gbc-general/target", "net.hedtech.banner.gbc-general-*.jar", timestamp)
-                    uploadBuild("./gbc-payroll/target", "net.hedtech.banner.gbc-payroll-*.jar", timestamp)
-                    uploadBuild("./gbc-ellucian-arsys/target", "net.hedtech.banner.gbc-ellucian-arsys-*.jar", timestamp)
-                    uploadBuild("./gbc-ellucian-finance/target", "net.hedtech.banner.gbc-ellucian-finance-*.jar", timestamp)
-                    uploadBuild("./gbc-arsys/target", "net.hedtech.banner.gbc-arsys-*.jar", timestamp)
-                    uploadBuild("./gbc-ellucian-general/target", "net.hedtech.banner.gbc-ellucian-general-*.jar", timestamp)
-                    uploadBuild("./gbc-ellucian-positioncontrol/target", "net.hedtech.banner.gbc-ellucian-positioncontrol-*.jar", timestamp)
-                    uploadBuild("./gbc-ellucian-student/target", "net.hedtech.banner.gbc-ellucian-student-*.jar", timestamp)
-                    uploadBuild("./gbc-ellucian-studentaid/target", "net.hedtech.banner.gbc-ellucian-studentaid-*.jar", timestamp)
-
+                  }
+                } catch (Exception e) {
+                    slackSend (channel: 'jenkins', message: ":bangbang: Build failed")
+                    currentBuild.result = 'ABORTED'
+                    error('Build failure')
                 }
+
+
+                uploadBuild("./workspace/webapp-workspace/target", "wrksp.war", timestamp)
+                uploadBuild("./build/webapp-services/target", "wrksp.ws.war", timestamp)
+
+                uploadBuild("./gbc-student/target", "net.hedtech.banner.gbc-student-*.jar", timestamp)
+                uploadBuild("./gbc-general/target", "net.hedtech.banner.gbc-general-*.jar", timestamp)
+                uploadBuild("./gbc-payroll/target", "net.hedtech.banner.gbc-payroll-*.jar", timestamp)
+                uploadBuild("./gbc-ellucian-arsys/target", "net.hedtech.banner.gbc-ellucian-arsys-*.jar", timestamp)
+                uploadBuild("./gbc-ellucian-finance/target", "net.hedtech.banner.gbc-ellucian-finance-*.jar", timestamp)
+                uploadBuild("./gbc-arsys/target", "net.hedtech.banner.gbc-arsys-*.jar", timestamp)
+                uploadBuild("./gbc-ellucian-general/target", "net.hedtech.banner.gbc-ellucian-general-*.jar", timestamp)
+                uploadBuild("./gbc-ellucian-positioncontrol/target", "net.hedtech.banner.gbc-ellucian-positioncontrol-*.jar", timestamp)
+                uploadBuild("./gbc-ellucian-student/target", "net.hedtech.banner.gbc-ellucian-student-*.jar", timestamp)
+                uploadBuild("./gbc-ellucian-studentaid/target", "net.hedtech.banner.gbc-ellucian-studentaid-*.jar", timestamp)
+
+                
                 slackSend (channel: 'jenkins', message: ":ballot_box_with_check: Finish building Admin Page and upload to https://artifactory.georgebrown.ca/artifactory/generic-local/ " + timestamp)
             }
         }
