@@ -52,6 +52,14 @@
               for (lines in csvfiles) {
                 def (actionType, filename) = lines.split(',')
                 filename=filename.trim()
+                if (filename.contains(" ")) {
+                    slackMessage += "space in filename: "+ filename + "\n"
+                    throw "space in filename"
+                }
+                if (filename.contains("\\")) {
+                    slackMessage += "backslash in filename: "+ filename + "\n"
+                    throw "backslash in filename"
+                }
                 switch (actionType.trim()) {
                   case "db":
                     slackMessage += " >> loading sqlfile: " + filename +"\n"
