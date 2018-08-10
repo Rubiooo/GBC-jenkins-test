@@ -60,6 +60,10 @@
                     slackMessage += "backslash in filename: "+ filename + "\n"
                     throw "backslash in filename"
                 }
+                if (! fileExists ( "${ROOTFOLDER}/${filename}")) {
+                    slackMessage += "file not exist: "+ filename + "\n"
+                    throw "file not exist"
+                }
                 switch (actionType.trim()) {
                   case "db":
                     slackMessage += " >> loading sqlfile: " + filename +"\n"
