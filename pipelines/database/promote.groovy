@@ -28,11 +28,8 @@ node {
       for (line in install) {
         packageList.add(booleanParam(defaultValue: false, description: '', name: line))
       }
-
-      userInput= input (message: 'choose packages', parameters: [
-          string(defaultValue: '', description: 'Notes', name: 'notes', trim: true),
-          packageList
-      ])
+      packageList.add(string(defaultValue: '', description: 'Notes', name: 'notes', trim: true))
+      userInput= input (message: 'choose packages', parameters: packageList)
     }
     stage("promote db scripts") {
       def sourceBranch= "${sourceEnv}-${BUILD_NUMBER}"
