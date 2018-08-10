@@ -38,6 +38,7 @@ node {
         sh "git checkout -B ${sourceBranch}"
         sh "cp ${sourceEnv}/deployment/install.txt ${targetEnv}/deployment/"
         sh "git add ${targetEnv}/deployment/install.txt"
+        print (userInput)
         for (line in install) {
           if (userInput[line]) {
             sh "cp ${sourceEnv}/deployment/${line}.csv ${targetEnv}/deployment/"
