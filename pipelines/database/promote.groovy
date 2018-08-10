@@ -28,6 +28,7 @@ node {
       for (line in install) {
         packageList.add(booleanParam(defaultValue: false, description: '', name: line))
       }
+      packageList.add(booleanParam(defaultValue: false, description: '', name: "--- end ---"))
       userInput= input (message: 'choose packages', parameters: packageList)
     }
     stage("promote db scripts") {
@@ -38,7 +39,7 @@ node {
         sh "git checkout -B ${sourceBranch}"
         sh "cp ${sourceEnv}/deployment/install.txt ${targetEnv}/deployment/"
         sh "git add ${targetEnv}/deployment/install.txt"
-        print (userInput)
+        
         for (line in install) {
           if (userInput[line]) {
             sh "cp ${sourceEnv}/deployment/${line}.csv ${targetEnv}/deployment/"
