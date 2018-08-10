@@ -28,8 +28,11 @@ node {
       for (line in install) {
         packageList.add(booleanParam(defaultValue: false, description: '', name: line))
       }
-      packageList.add(booleanParam(defaultValue: false, description: '', name: "--- end ---"))
-      userInput= input (message: 'choose packages', parameters: packageList)
+
+      userInput= input (message: 'choose packages', parameters: [
+          string(defaultValue: '', description: 'Notes', name: 'notes', trim: true),
+          packageList
+      ])
     }
     stage("promote db scripts") {
       def sourceBranch= "${sourceEnv}-${BUILD_NUMBER}"
@@ -39,7 +42,7 @@ node {
         sh "git checkout -B ${sourceBranch}"
         sh "cp ${sourceEnv}/deployment/install.txt ${targetEnv}/deployment/"
         sh "git add ${targetEnv}/deployment/install.txt"
-        
+
         for (line in install) {
           if (userInput[line]) {
             sh "cp ${sourceEnv}/deployment/${line}.csv ${targetEnv}/deployment/"
@@ -61,7 +64,8 @@ node {
           sh "git push origin HEAD"
           sh "sed -i \"s#BUILD_USER#${BUILD_USER}#\" pr.json"
         }
-        sh "sed -i s#SOURCE#${sourceBranch}# pr.json"
+        sh "sed -i s#SOURCE#${sourceEnv}# pr.json"
+        sh "sed -i s#SOURCE#${targetEnv}# pr.json"
         sh "sed -i s#TIMESTAMP#${TIMESTAMP}# pr.json"
         withCredentials([usernamePassword(credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           def curl_login="curl -u $USERNAME:$PASSWORD"
