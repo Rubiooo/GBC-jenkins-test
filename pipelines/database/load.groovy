@@ -76,6 +76,7 @@
                     break
                   default:
                     slackMessage += "unknow category "+ actionType + "\n"
+                    throw "unkonw category"
                 }
               }
               slackSend (channel: 'db-promotion', message: slackMessage)
