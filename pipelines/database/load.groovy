@@ -96,6 +96,7 @@
             slackSend (channel: 'db-promotion', message: ":white_check_mark: Job complete, please check logs -> ${BUILD_URL}")
           } catch(error){
             currentBuild.result = 'FAILURE'
+            slackSend (channel: 'db-promotion', message: slackMessage)
             slackSend (channel: 'db-promotion', message: ":warning: Job failure, please check logs -> ${BUILD_URL}")
           }
         }
