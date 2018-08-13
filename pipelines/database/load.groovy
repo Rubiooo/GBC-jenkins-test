@@ -22,7 +22,7 @@
         stage("choose env") {
 
           userInput = input(
-           id: 'userInput', message: 'choose sql script', parameters: [
+           id: 'userInput', message: 'choose Env', parameters: [
            choice(choices: environment, description: '', name: 'env'),
            string(defaultValue: 'jenkins', description: 'db username', name: 'username', trim: true),
            password(defaultValue: '', description: 'db password', name: 'password'),

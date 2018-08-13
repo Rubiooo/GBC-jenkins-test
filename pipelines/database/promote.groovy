@@ -12,13 +12,13 @@ node {
 
       userInput = input(
        id: 'userInput', message: 'choose source and target environment', parameters: [
-       choice(choices: promotionPath, description: '', name: 'promotionPath')
+       choice(choices: promotionPath, description: '', name: 'promotion Path')
        ])
       sourceEnv = userInput.split("->")[0]
       targetEnv = userInput.split("->")[1]
     }
 
-    stage("choose packages"){
+    stage("choose Jira issues"){
       sh "rm -rf gbcbanner"
       sh "git clone ssh://git@gitrepo.georgebrown.ca:7999/gbc/gbcbanner.git"
 
@@ -29,7 +29,7 @@ node {
         packageList.add(booleanParam(defaultValue: false, description: '', name: line))
       }
       packageList.add(string(defaultValue: '', description: 'Notes', name: 'notes', trim: true))
-      userInput= input (message: 'choose packages', parameters: packageList)
+      userInput= input (message: 'choose Jira issues', parameters: packageList)
     }
     stage("promote db scripts") {
       def sourceBranch= "${sourceEnv}-${targetEnv}"
