@@ -44,6 +44,9 @@
             slackSend (channel: 'db-promotion', message: slackMessage)
           }
           ROOTFOLDER = env.WORKSPACE+"/"+userInput["env"]
+          def jssServer= jssList[userInput['env']]
+          def jssPath= jssPathList[userInput['env']]
+
           String[] install = new File("${ROOTFOLDER}/deployment/install.txt").readLines()
 
           try{
@@ -57,6 +60,7 @@
                 for (lines in csvfiles) {
                   def (actionType, filename) = lines.split(',')
                   filename=filename.trim()
+                  foldername=filename.substring(0, filename.lastIndexOf("/"))
                   if (filename.contains(" ")) {
                       slackMessage += "space in filename: "+ filename + "\n"
                       throw "space in filename"
@@ -80,10 +84,7 @@
                       break
                     case "jss":
                       slackMessage += " >> copy scripts to jobs server: " + filename + "\n"
-                      def jssServer= jssList[userInput['env']]
-                      def jssPath= jssPathList[userInput['env']]
                       cmd="scp ${ROOTFOLDER}/${filename} ${jssServer}:${jssPath}/${filename}"
-                      foldername=filename.substring(0, filename.lastIndexOf("/"))
                       println (cmd)
                       if (userInput['dryrun']==false) {
                         sh "ssh ${jssServer} mkdir -p ${jssPath}/${foldername}"
@@ -93,11 +94,8 @@
                       break
                     case "lnk":
                       slackMessage += " >> copy scripts to jobs server and create symbol link: " + filename + "\n"
-                      def jssServer= jssList[userInput['env']]
-                      def jssPath= jssPathList[userInput['env']]
                       cmd="scp ${ROOTFOLDER}/${filename} ${jssServer}:${jssPath}/${filename}"
                       cmd2= "ln -f -s ${jssPath}/${filename} ${jssPath}/gbclinks"
-                      foldername=filename.substring(0, filename.lastIndexOf("/"))
                       println (cmd)
                       println (cmd2)
                       if (userInput['dryrun']==false) {
