@@ -55,10 +55,10 @@
            prodlist = sh (returnStdout: true, script: cmd)
            println (prodlist)
 
-           prodlist.eachLine {line ->
+           for (line in prodlist.readLines()) {
             println ">>> ${line}.csv"
            }
-           
+
           try{
             for (line in install) {
 
