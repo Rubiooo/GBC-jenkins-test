@@ -1,6 +1,6 @@
-folder('db')
+folder('scripts_promotion')
 
-pipelineJob('db/load_script') {
+pipelineJob('scripts_promotion/load_script') {
     clogRotator(2, 10, -1, -1)
     authorization {
        permissionAll('M180xxx') //Max
@@ -19,7 +19,7 @@ pipelineJob('db/load_script') {
     }
 }
 
-pipelineJob('db/promote_script') {
+pipelineJob('scripts_promotion/git_promote') {
     logRotator(2, 10, -1, -1)
     authorization {
       permissionAll('M180xxx') //Max

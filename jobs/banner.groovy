@@ -1,6 +1,6 @@
-folder('banner_build')
+folder('banner_page_build')
 
-pipelineJob('banner_build/build_baseline') {
+pipelineJob('banner_page_build/build_baseline') {
     definition {
         cpsScm {
             scm {
@@ -11,7 +11,7 @@ pipelineJob('banner_build/build_baseline') {
     }
 }
 
-pipelineJob('banner_build/build_gbc') {
+pipelineJob('banner_page_build/build_gbc') {
     triggers {
         corn('H 16 * * *')
     }
@@ -25,7 +25,7 @@ pipelineJob('banner_build/build_gbc') {
     }
 }
 
-pipelineJob('banner_build/deploy_dev') {
+pipelineJob('banner_page_build/deploy_dev') {
     definition {
         cpsScm {
             scm {
@@ -36,7 +36,7 @@ pipelineJob('banner_build/deploy_dev') {
     }
 }
 
-pipelineJob('banner_build/deploy_test') {
+pipelineJob('banner_page_build/deploy_test') {
     definition {
         cpsScm {
             scm {
@@ -47,7 +47,7 @@ pipelineJob('banner_build/deploy_test') {
     }
 }
 
-pipelineJob('banner_build/deploy_esm') {
+pipelineJob('banner_page_build/deploy_esm') {
     definition {
         cpsScm {
             scm {
