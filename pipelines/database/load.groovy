@@ -55,7 +55,7 @@
            prodlist = sh (returnStdout: true, script: cmd)
            println (prodlist)
 
-           for (line in prodlist.readLines()) {
+           for (line in prodlist.toLowerCase().readLines()) {
             println ">>> ${line}.csv"
            }
 
@@ -91,11 +91,10 @@
                         sh (cmd)
                         def output = sh (returnStdout: true, script: cmd)
                         println output
-                        if (output.contains("ERROR")) {
+                        if (output.contains("ERROR") || output.contains("ORA-")){
                           slackMessage += "ERROR in output: "+ filename + "\n"
                           throw "ERROR in output"
-                        }
-                    }
+                        }                
                       }
                       break
                     case "jss":
