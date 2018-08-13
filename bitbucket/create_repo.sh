@@ -1,5 +1,8 @@
 #!/bin/bash
 
+BINDIR="$( cd "$( dirname "$0" )" && pwd )"
+cd ${BINDIR}
+
 user=admin
 password=$1
 api=https://gitrepo.georgebrown.ca/rest/api/1.0

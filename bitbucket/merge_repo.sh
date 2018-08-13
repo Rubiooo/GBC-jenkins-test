@@ -1,5 +1,8 @@
 #!/bin/bash
 
+BINDIR="$( cd "$( dirname "$0" )" && pwd )"
+cd ${BINDIR}
+
 REPO_ROOT="ssh://git@gitrepo.georgebrown.ca:7999"
 PROJECT="banner_pages"
 
