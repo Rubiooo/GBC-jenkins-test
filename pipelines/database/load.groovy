@@ -111,6 +111,10 @@
                         sh "ssh ${jssServer} chmod 755 ${jssPath}/${filename}"
                         sh "ssh ${jssServer} ${cmd2}"
                       }
+                      break
+                    case "file":
+                      slackMessage = " >> ignore file: " + filename + "\n"
+                      break
                     default:
                       slackMessage += "unknow category "+ actionType + "\n"
                       throw "unkonw category"
