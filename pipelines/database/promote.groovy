@@ -65,7 +65,7 @@ node {
         sh "sed -i s#SOURCEBRANCH#${sourceBranch}# pr.json"
         sh "sed -i s#SOURCEENV#${sourceEnv}# pr.json"
         sh "sed -i s#TARGETENV"#${targetEnv}# pr.json"
-        sh "sed -i s#DESCRIPTION#${description}# pr.json"
+        sh "sed -i s#DESCRIPTION#\"${description}\"# pr.json"
         withCredentials([usernamePassword(credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           def curl_login="curl -u $USERNAME:$PASSWORD"
           sh "${curl_login} -X POST -H \"Content-Type: application/json\" -d @pr.json https://gitrepo.georgebrown.ca/rest/api/1.0/projects/GBC/repos/gbcbanner/pull-requests"
