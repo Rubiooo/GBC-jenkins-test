@@ -57,7 +57,7 @@
 
                 withCredentials([usernamePassword(credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                    def curl_login="curl -u $USERNAME:$PASSWORD"
-                   cmd = "${curl_login} -s -X GET -H \"Content-Type: application/json\" https://jira.georgebrown.ca/rest/api/2/search?jql=status%20%3D%20\"Code%20Release%20Promotion%20(PROD)\"&fields=key|jq -r .issues[].key"
+                   cmd = "${curl_login} -s -X GET -H \"Content-Type: application/json\" \"https://jira.georgebrown.ca/rest/api/2/search?jql=status%20%3D%20\"Code%20Release%20Promotion%20(PROD)\"&fields=key\"|jq -r .issues[].key"
                  }
                  prodlist = sh (returnStdout: true, script: cmd)
                  println (prodlist)
