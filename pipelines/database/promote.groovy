@@ -32,7 +32,7 @@ node {
       userInput= input (message: 'choose packages', parameters: packageList)
     }
     stage("promote db scripts") {
-      def sourceBranch= "${sourceEnv}-${BUILD_NUMBER}"
+      def sourceBranch= "${sourceEnv}-${targetEnv}"
       def now = new Date()
       def TIMESTAMP=now.format("yyyyMMdd-HHmm")
       dir ("gbcbanner"){
@@ -61,8 +61,9 @@ node {
           sh "git push origin HEAD"
           sh "sed -i \"s#BUILD_USER#${BUILD_USER}#\" pr.json"
         }
-        sh "sed -i s#SOURCE#${sourceEnv}# pr.json"
-        sh "sed -i s#SOURCE#${targetEnv}# pr.json"
+        sh "sed -i s#SOURCEBRANCH#${sourceBranch}# pr.json"
+        sh "sed -i s#SOURCEENV#${sourceEnv}# pr.json"
+        sh "sed -i s#TARGETENV"#${targetEnv}# pr.json"
         sh "sed -i s#TIMESTAMP#${TIMESTAMP}# pr.json"
         withCredentials([usernamePassword(credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           def curl_login="curl -u $USERNAME:$PASSWORD"
