@@ -81,6 +81,7 @@
                       if (userInput['dryrun']==false) {
                         sh (cmd)
                         def output = sh (returnStdout: true, script: cmd)
+                        println output
                         if (output.contains("ERROR")) {
                           slackMessage += "ERROR in output: "+ filename + "\n"
                           throw "ERROR in output"
