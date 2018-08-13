@@ -55,7 +55,7 @@ node {
             }
           }
         }
-        description=userInput["description"]
+        description=userInput["description"].replaceAll("#"," ")
         wrap([$class: 'BuildUser']) {
           sh "git config user.name \"${BUILD_USER}\""
           sh "git commit -m \"${BUILD_USER} promote ${sourceEnv} to ${targetEnv} on ${TIMESTAMP}\""
