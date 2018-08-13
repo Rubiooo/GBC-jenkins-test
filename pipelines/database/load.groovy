@@ -16,6 +16,7 @@
       'prod':'/u02/gbc/banner/PROD',
       'prds':'/u02/gbc/banner/PRDS']
       def cmd=""
+
       def userInput
       def slackMessage=""
       timestamps {
@@ -90,6 +91,21 @@
                         sh "ssh ${jssServer} chmod 755 ${jssPath}/${filename}"
                       }
                       break
+                    case "lnk":
+                      slackMessage += " >> copy scripts to jobs server and create symbol link: " + filename + "\n"
+                      def jssServer= jssList[userInput['env']]
+                      def jssPath= jssPathList[userInput['env']]
+                      cmd="scp ${ROOTFOLDER}/${filename} ${jssServer}:${jssPath}/${filename}"
+                      cmd2= "ln -f -s ${jssPath}/${filename} ${jssPath}/gbclinks"
+                      foldername=filename.substring(0, filename.lastIndexOf("/"))
+                      println (cmd)
+                      println (cmd2)
+                      if (userInput['dryrun']==false) {
+                        sh "ssh ${jssServer} mkdir -p ${jssPath}/${foldername}"
+                        sh (cmd)
+                        sh "ssh ${jssServer} chmod 755 ${jssPath}/${filename}"
+                        sh "ssh ${jssServer} ${cmd2}"
+                      }
                     default:
                       slackMessage += "unknow category "+ actionType + "\n"
                       throw "unkonw category"
