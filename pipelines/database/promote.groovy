@@ -28,7 +28,7 @@ node {
       for (line in install) {
         packageList.add(booleanParam(defaultValue: false, description: '', name: line))
       }
-      packageList.add(string(defaultValue: '', description: 'Notes', name: 'notes', trim: true))
+      packageList.add(string(defaultValue: '', description: 'Pull Request description', name: 'description', trim: true))
       userInput= input (message: 'choose Jira issues', parameters: packageList)
     }
     stage("promote db scripts") {
@@ -55,6 +55,7 @@ node {
             }
           }
         }
+        description=userInput["description"]
         wrap([$class: 'BuildUser']) {
           sh "git config user.name \"${BUILD_USER}\""
           sh "git commit -m \"${BUILD_USER} promote ${sourceEnv} to ${targetEnv} on ${TIMESTAMP}\""
@@ -64,7 +65,7 @@ node {
         sh "sed -i s#SOURCEBRANCH#${sourceBranch}# pr.json"
         sh "sed -i s#SOURCEENV#${sourceEnv}# pr.json"
         sh "sed -i s#TARGETENV"#${targetEnv}# pr.json"
-        sh "sed -i s#TIMESTAMP#${TIMESTAMP}# pr.json"
+        sh "sed -i s#DESCRIPTION#${description}# pr.json"
         withCredentials([usernamePassword(credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           def curl_login="curl -u $USERNAME:$PASSWORD"
           sh "${curl_login} -X POST -H \"Content-Type: application/json\" -d @pr.json https://gitrepo.georgebrown.ca/rest/api/1.0/projects/GBC/repos/gbcbanner/pull-requests"
