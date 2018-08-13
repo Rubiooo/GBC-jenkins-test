@@ -59,7 +59,7 @@ node {
         wrap([$class: 'BuildUser']) {
           sh "git config user.name \"${BUILD_USER}\""
           sh "git commit -m \"${BUILD_USER} promote ${sourceEnv} to ${targetEnv} on ${TIMESTAMP}\""
-          sh "git push origin HEAD"
+          sh "git push origin HEAD --force"
           sh "sed -i \"s#BUILD_USER#${BUILD_USER}#\" pr.json"
         }
         sh "sed -i s#SOURCEBRANCH#${sourceBranch}# pr.json"
