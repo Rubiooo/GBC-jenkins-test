@@ -44,54 +44,59 @@
           }
           ROOTFOLDER = env.WORKSPACE+"/"+userInput["env"]
           String[] install = new File("${ROOTFOLDER}/deployment/install.txt").readLines()
+
           try{
             for (line in install) {
-              slackMessage="processing ticket: " +line+"\n"
-              String[] csvfiles = new File("${ROOTFOLDER}/deployment/"+line+".csv").readLines()
 
-              for (lines in csvfiles) {
-                def (actionType, filename) = lines.split(',')
-                filename=filename.trim()
-                if (filename.contains(" ")) {
-                    slackMessage += "space in filename: "+ filename + "\n"
-                    throw "space in filename"
+              if (fileExists("${ROOTFOLDER}/deployment/+line+".csv")) {
+                slackMessage="processing ticket: " +line+"\n"
+                String[]csvfiles = new File("${ROOTFOLDER}/deployment/"+line+".csv").readLines()
+
+
+                for (lines in csvfiles) {
+                  def (actionType, filename) = lines.split(',')
+                  filename=filename.trim()
+                  if (filename.contains(" ")) {
+                      slackMessage += "space in filename: "+ filename + "\n"
+                      throw "space in filename"
+                  }
+                  if (filename.contains("\\")) {
+                      slackMessage += "backslash in filename: "+ filename + "\n"
+                      throw "backslash in filename"
+                  }
+                  if (! fileExists ( "${ROOTFOLDER}/${filename}")) {
+                      slackMessage += "file not exist: "+ filename + "\n"
+                      throw "file not exist"
+                  }
+                  switch (actionType.trim()) {
+                    case "db":
+                      slackMessage += " >> loading sqlfile: " + filename +"\n"
+                      cmd = "docker run -v ${ROOTFOLDER}:/sql -t --rm -e URL=$dburl nextlink/sqlplus @/sql/$filename"
+                      println (cmd)
+                      if (userInput['dryrun']==false) {
+                        sh (cmd)
+                      }
+                      break
+                    case "jss":
+                      slackMessage += " >> copy scripts to jobs server: " + filename + "\n"
+                      def jssServer= jssList[userInput['env']]
+                      def jssPath= jssPathList[userInput['env']]
+                      cmd="scp ${ROOTFOLDER}/${filename} ${jssServer}:${jssPath}/${filename}"
+                      foldername=filename.substring(0, filename.lastIndexOf("/"))
+                      println (cmd)
+                      if (userInput['dryrun']==false) {
+                        sh "ssh ${jssServer} mkdir -p ${jssPath}/${foldername}"
+                        sh (cmd)
+                        sh "ssh ${jssServer} chmod 755 ${jssPath}/${filename}"
+                      }
+                      break
+                    default:
+                      slackMessage += "unknow category "+ actionType + "\n"
+                      throw "unkonw category"
+                  }
                 }
-                if (filename.contains("\\")) {
-                    slackMessage += "backslash in filename: "+ filename + "\n"
-                    throw "backslash in filename"
-                }
-                if (! fileExists ( "${ROOTFOLDER}/${filename}")) {
-                    slackMessage += "file not exist: "+ filename + "\n"
-                    throw "file not exist"
-                }
-                switch (actionType.trim()) {
-                  case "db":
-                    slackMessage += " >> loading sqlfile: " + filename +"\n"
-                    cmd = "docker run -v ${ROOTFOLDER}:/sql -t --rm -e URL=$dburl nextlink/sqlplus @/sql/$filename"
-                    println (cmd)
-                    if (userInput['dryrun']==false) {
-                      sh (cmd)
-                    }
-                    break
-                  case "jss":
-                    slackMessage += " >> copy scripts to jobs server: " + filename + "\n"
-                    def jssServer= jssList[userInput['env']]
-                    def jssPath= jssPathList[userInput['env']]
-                    cmd="scp ${ROOTFOLDER}/${filename} ${jssServer}:${jssPath}/${filename}"
-                    foldername=filename.substring(0, filename.lastIndexOf("/"))
-                    println (cmd)
-                    if (userInput['dryrun']==false) {
-                      sh "ssh ${jssServer} mkdir -p ${jssPath}/${foldername}"
-                      sh (cmd)
-                      sh "ssh ${jssServer} chmod 755 ${jssPath}/${filename}"
-                    }
-                    break
-                  default:
-                    slackMessage += "unknow category "+ actionType + "\n"
-                    throw "unkonw category"
-                }
+                slackSend (channel: 'db-promotion', message: slackMessage)
               }
-              slackSend (channel: 'db-promotion', message: slackMessage)
             }
             slackSend (channel: 'db-promotion', message: ":white_check_mark: Job complete, please check logs -> ${BUILD_URL}")
           } catch(error){
