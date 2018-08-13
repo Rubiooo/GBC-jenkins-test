@@ -80,6 +80,12 @@
                       println (cmd)
                       if (userInput['dryrun']==false) {
                         sh (cmd)
+                        def output = sh (returnStdout: true, script: cmd)
+                        if (output.contains("ERROR")) {
+                          slackMessage += "ERROR in output: "+ filename + "\n"
+                          throw "ERROR in output"
+                        }
+                    }
                       }
                       break
                     case "jss":
