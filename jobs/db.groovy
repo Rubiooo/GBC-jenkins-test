@@ -6,9 +6,14 @@ pipelineJob('scripts_promotion/load_script') {
     authorization {
        permissionAll('M180xxx') //Max
        permissionAll('50xxx') //Ibrah
+       blocksInheritance()
    }
-
-
+   parameters {
+        choiceParam('ENV', ['devl', 'test', 'prod', 'prds'])
+        stringParam('username', 'jenkins', 'db username')
+        nonStoredPasswordParam('password', 'db password')
+        booleanParam('DryRun', true)
+    }
     definition {
         cpsScm {
             scm {
