@@ -13,9 +13,8 @@ pipelineJob('banner_page_build/build_baseline') {
 
 pipelineJob('banner_page_build/build_gbc') {
   description('''Build the war files and upload to artifactory.
-     <br/>
-     scheduled to run everyday afternoon at 4:30pm.
-     ''')
+scheduled to run everyday afternoon at 4:30pm.
+''')
     triggers {
         corn('30 16 * * *')
     }
