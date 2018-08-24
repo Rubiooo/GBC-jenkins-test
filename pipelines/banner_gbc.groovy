@@ -51,14 +51,14 @@
                     sh "docker run -t --rm -v `pwd`:/app -v ${MVNSETTINGS}:/root/.m2/settings.xml -v /tmp/m2.repository/:/root/.m2/repository/ maven:3 mvn -B -f /app/build/net.hedtech.banner.hr/pom.xml clean package"
                   }
                   sh "mkdir -p dist"
-                  sh "tar czfv dist/devl.tar.gz -C devl ."
+                  sh "tar czfv dist/devl.wrksp.ws.tar.gz -C devl/wrksp.ws ."
                 } catch (Exception e) {
                     slackSend (channel: 'jenkins', message: ":bangbang: @channel Build failed, please check ${BUILD_URL}")
                     currentBuild.result = 'FAILURE'
                     error('Build failure')
                 }
 
-                uploadBuild("./dist", "devl.tar.gz",timestamp)
+                uploadBuild("./dist", "devl.wrksp.ws.tar.gz",timestamp)
                 uploadBuild("./workspace/webapp-workspace/target", "wrksp.war", timestamp)
                 uploadBuild("./build/webapp-services/target", "wrksp.ws.war", timestamp)
 

@@ -23,14 +23,12 @@ node {
         def curl_login="curl -u $USERNAME:$PASSWORD"
         sh "$curl_login -sSLO https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/latest/wrksp.war"
         sh "$curl_login -sSLO https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/latest/wrksp.ws.war"
-        sh "$curl_login -sSLO https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/latest/devl.tar.gz"
+        sh "$curl_login -sSLO https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/latest/devl.wrksp.ws.tar.gz"
       }
       sh "ssh $host \"rm -rf /u01/app/tomcat/webapps/wrksp\""
       sh "ssh $host \"rm -rf /u01/app/tomcat/webapps/wrksp.ws\""
       sh "ssh $host \"rm -rf /u01/app/tomcat/temp\""
       sh "scp wrksp.war $host:/u01/app/tomcat/webapps"
-      sh "scp wrksp.ws.war $host:/u01/app/tomcat/webapps"
-      sh "scp devl.tar.gz $host:/tmp"
       sh "ssh $host \"chown -R tomcat:tomcat /u01/app/tomcat/webapps/\""
     }
 
