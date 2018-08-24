@@ -1,0 +1,42 @@
+node {
+  def release="latest"
+  def host="ban9appnav01d.gbcdev.local"
+  timestamps {
+    stage("choose release") {
+      def prefix="generic-local/build-gbc/"
+      def suffix="/wrksp.war"
+      def command = "jfrog rt s ${prefix}*${suffix}|jq '[sort_by(.path)[].path|ltrimstr(\"${prefix}\")|rtrimstr(\"${suffix}\")] - [\"latest\"]|reverse|.[]'"
+      def releases = sh(returnStdout: true, script: command)
+
+      def userInput = input(
+       id: 'userInput', message: 'choose releases version', parameters: [
+       choice(choices: releases, description: '', name: 'release')
+       ])
+      echo ("release: "+userInput)
+      release=userInput
+    }
+
+    stage ("stop tomcat") {
+      slackSend (channel: 'jenkins', message: ":black_square_button: Start deploy Admin Page to " + host + " with version " + release)
+      sh "ssh $host \"sudo -u tomcat /u01/app/tomcat/bin/shutdown.sh\""
+    }
+
+    stage ("upload war file") {
+      withCredentials([usernamePassword(credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+        def curl_login="curl -u $USERNAME:$PASSWORD"
+        sh "$curl_login -sSLO https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/${release}/wrksp.war"
+        sh "$curl_login -sSLO https://artifactory.georgebrown.ca/artifactory/generic-local/build-gbc/${release}/wrksp.ws.war"
+      }
+      sh "ssh $host \"rm -rf /u01/app/tomcat/webapps/wrksp\""
+      sh "ssh $host \"rm -rf /u01/app/tomcat/webapps/wrksp.ws\""
+      sh "scp wrksp.war $host:/u01/app/tomcat/webapps"
+      sh "scp wrksp.ws.war $host:/u01/app/tomcat/webapps"
+      sh "ssh $host \"chown tomcat:tomcat /u01/app/tomcat/webapps/*.war\""
+    }
+
+    stage ("start tomcat") {
+      sh "ssh $host \"sudo -u tomcat /u01/app/tomcat/bin/startup.sh\""
+      slackSend (channel: 'jenkins', message: ":ballot_box_with_check: Finish deploy Admin Page to " + host + " with version " + release)
+    }
+  }
+}
