@@ -1,17 +1,23 @@
+node {
 
-folder('scheduled_job')
-pipelineJob('scheduled_job/devl_nightly') {
-    description('''load script to devl and deploy war to devl every morning at 2am
-''')
-    triggers {
-        cron('0 2 * * *')
+timestamps {
+
+
+    stage("Start") {
+        slackSend (channel: 'db-promotion', message: "====== auto devl Begin ======")
+
+        build job: '/scripts_promotion/load_script',
+            parameters: [string(name: 'Environment', value: 'devl'),
+                string(name: 'Username', value: 'jenkins'),
+                [$class: 'com.michelin.cio.hudson.plugins.passwordparam.PasswordParameterValue', description: 'db password', name: 'Password', value: 'abc123'],
+                booleanParam(name: 'DryRun', value: true)]
+
+        build job: 'banner_page_build/build_gbc'
+
+        build job: '/banner_page_build/deploy_dev'
+
+        slackSend (channel: 'db-promotion', message: "====== auto devl Finish ======")
+
     }
-    definition {
-        cpsScm {
-            scm {
-                git('ssh://git@gitrepo.georgebrown.ca:7999/dev/jenkins-dsl.git', 'master')
-            }
-            scriptPath("pipelines/scheduled/auto_devl.groovy")
-        }
-    }
-}
+} //timestamps
+} //node
