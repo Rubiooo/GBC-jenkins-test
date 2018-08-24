@@ -17,7 +17,9 @@ node {
     }
 
     stage ("stop tomcat") {
-      slackSend (channel: 'jenkins', message: ":black_square_button: Start deploy Admin Page to " + host + " with version " + release)
+      wrap([$class: 'BuildUser']) {
+        slackSend (channel: 'jenkins', message: ":black_square_button: "+  env.BUILD_USER +" Start deploy Admin Page to " + host + " with version " + release)
+      }
       sh "ssh $host \"sudo -u tomcat /u01/app/tomcat/bin/shutdown.sh\""
     }
 
