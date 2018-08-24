@@ -20,21 +20,22 @@
       def userInput
       def slackMessage=""
       timestamps {
-        stage("choose env") {
+        stage("checkout scripts") {
 
-          userInput = input(
-           id: 'userInput', message: 'choose Env', parameters: [
-           choice(choices: environment, description: '', name: 'env'),
-           string(defaultValue: 'jenkins', description: 'db username', name: 'username', trim: true),
-           password(defaultValue: '', description: 'db password', name: 'password'),
-           booleanParam(defaultValue: true, description: 'Dry Run', name: 'dryrun')
-           ])
+          // userInput = input(
+          //  id: 'userInput', message: 'choose Env', parameters: [
+          //  choice(choices: environment, description: '', name: 'env'),
+          //  string(defaultValue: 'jenkins', description: 'db username', name: 'username', trim: true),
+          //  password(defaultValue: '', description: 'db password', name: 'password'),
+          //  booleanParam(defaultValue: true, description: 'Dry Run', name: 'dryrun')
+          //  ])
           dburl= userInput['username']+"/"+userInput['password']+ dburls[userInput['env']]
           scm=checkout([
             $class: 'GitSCM',
             branches: [[name: 'master']],
             userRemoteConfigs: [[url: 'ssh://git@gitrepo.georgebrown.ca:7999/gbc/gbcbanner.git']]
           ])
+          sh "set +x"
         }
 
         stage("load scripts") {
@@ -51,8 +52,8 @@
           withCredentials([usernamePassword(credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
              def curl_login="curl -u $USERNAME:$PASSWORD"
              cmd = "${curl_login} -s -X GET -H \"Content-Type: application/json\" 'https://jira.georgebrown.ca/rest/api/2/search?jql=status%20%3D%20\"Code%20Release%20Promotion%20(PROD)\"&fields=key'|jq -r .issues[].key"
+             prodlist = sh (returnStdout: true, script md)
            }
-           prodlist = sh (returnStdout: true, script: cmd)
            println (prodlist)
 
            for (line in prodlist.toLowerCase().readLines()) {
