@@ -51,14 +51,14 @@ pipelineJob('banner_page_build/deploy_dev') {
     }
 }
 
-pipelineJob('banner_page_build/deploy_test') {
-  
+pipelineJob('banner_page_build/deploy_release') {
+
     definition {
         cpsScm {
             scm {
                 git('ssh://git@gitrepo.georgebrown.ca:7999/dev/jenkins-dsl.git', 'master')
             }
-            scriptPath('pipelines/deploy_test.groovy')
+            scriptPath('pipelines/deploy_release.groovy')
         }
     }
 }
