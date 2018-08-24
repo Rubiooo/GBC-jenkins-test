@@ -12,8 +12,12 @@ pipelineJob('banner_page_build/build_baseline') {
 }
 
 pipelineJob('banner_page_build/build_gbc') {
+  description('''Build the war files and upload to artifactory.
+     <br/>
+     scheduled to run everyday afternoon at 4:30pm.
+     ''')
     triggers {
-        corn('H 16 * * *')
+        corn('30 16 * * *')
     }
     definition {
         cpsScm {
@@ -26,6 +30,7 @@ pipelineJob('banner_page_build/build_gbc') {
 }
 
 pipelineJob('banner_page_build/deploy_dev') {
+    description('Deploy latest war files to tomcat in DEVL')
     definition {
         cpsScm {
             scm {
