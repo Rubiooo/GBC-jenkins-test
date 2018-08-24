@@ -52,12 +52,14 @@
              def curl_login="curl -u $USERNAME:$PASSWORD"
              cmd = "${curl_login} -s -X GET -H \"Content-Type: application/json\" 'https://jira.georgebrown.ca/rest/api/2/search?jql=status%20%3D%20\"Code%20Release%20Promotion%20(PROD)\"&fields=key'|jq -r .issues[].key"
              prodlist = sh (returnStdout: true, script md)
-           }
-           println (prodlist)
-
-           for (line in prodlist.toLowerCase().readLines()) {
-            println ">>> ${line}.csv"
-           }
+          }
+          if (env['Environment'] == "prod") {
+             println (prodlist)
+             install=prodlist.toLowerCase().readLines()
+             slackMessage = "load script in *prod* environment, using ticket list from JIRA with *Code Release Promotion (PROD)* status."
+             slackMessage += prodlist.toLowerCase()
+             slackSend (channel: 'db-promotion', message: slackMessage)
+          }
 
           try{
             for (line in install) {
