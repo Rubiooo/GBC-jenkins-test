@@ -2,7 +2,8 @@ node {
 
   timestamps {
       slackSend (channel: 'db-promotion', message: "====== auto devl Begin ======")
-      stage("load load_script") {
+
+      stage("load script") {
 
           build job: '/scripts_promotion/load_script',
               parameters: [string(name: 'Environment', value: 'devl'),
@@ -16,6 +17,7 @@ node {
 
           build job: '/banner_page_build/deploy_dev'
       }
+      
       slackSend (channel: 'db-promotion', message: "====== auto devl Finish ======")
   } //timestamps
 } //node
