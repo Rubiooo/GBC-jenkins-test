@@ -1,6 +1,7 @@
 folder('scripts_promotion')
 
 pipelineJob('scripts_promotion/load_script') {
+    description('load scripts to environment')
     clogRotator(2, 10, -1, -1)
     authorization {
        permissionAll('M180xxx') //Max
@@ -20,6 +21,7 @@ pipelineJob('scripts_promotion/load_script') {
 }
 
 pipelineJob('scripts_promotion/git_promote') {
+    description('promotion scripts, create pull request for review.')
     logRotator(2, 10, -1, -1)
     authorization {
       permissionAll('M180xxx') //Max

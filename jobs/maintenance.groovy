@@ -1,6 +1,7 @@
 folder('maintenance')
 
 pipelineJob('maintenance/cleanup_artifactory') {
+    description('delete build result in build-gbc folder old than 60 days in artifactory')
     definition {
         cpsScm {
             scm {
