@@ -1,7 +1,7 @@
 node {
 
   timestamps {
-      slackSend (channel: 'db-promotion', message: "====== auto devl Begin ======")
+      slackSend (baseUrl: 'https://gbcitsea.slack.com/services/hooks/jenkins-ci/', channel: 'db-promotion', message: "====== auto devl Begin ======")
 
       stage("load script") {
 
@@ -18,6 +18,6 @@ node {
           build job: '/banner_page_build/deploy_dev'
       }
 
-      slackSend (channel: 'db-promotion', message: "====== auto devl Finish ======")
+      slackSend (baseUrl: 'https://gbcitsea.slack.com/services/hooks/jenkins-ci/', channel: 'db-promotion', message: "====== auto devl Finish ======")
   } //timestamps
 } //node
