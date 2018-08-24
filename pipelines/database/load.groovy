@@ -35,7 +35,6 @@
             branches: [[name: 'master']],
             userRemoteConfigs: [[url: 'ssh://git@gitrepo.georgebrown.ca:7999/gbc/gbcbanner.git']]
           ])
-          sh "set +x"
         }
 
         stage("load scripts") {
@@ -86,7 +85,7 @@
                   switch (actionType.trim()) {
                     case "db":
                       slackMessage += " >> loading sqlfile: " + filename +"\n"
-                      cmd = "docker run -v ${ROOTFOLDER}:/sql -t --rm -e URL=$dburl nextlink/sqlplus @/sql/$filename"
+                      cmd = "set -x; docker run -v ${ROOTFOLDER}:/sql -t --rm -e URL=$dburl nextlink/sqlplus @/sql/$filename"
                       // println (cmd)
                       if (userInput['dryrun']==false) {
                         sh (cmd)
