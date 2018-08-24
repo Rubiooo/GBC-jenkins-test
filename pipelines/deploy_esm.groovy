@@ -6,7 +6,17 @@ node {
   def packageName
   def command
   def userInput
-  def host="ban9appnav01d.gbcdev.local"
+  def environment="devl\ntest\nprod\nprds"
+  def esmHostList = ['devl':'ban9appnav01d.gbcdev.local',
+  'test':'ban9appnav01d.gbcdev.local',
+  'prod':'ban9appnav01d.gbcdev.local',
+  'prds':'ban9appnav01d.gbcdev.local']
+  def esmPathList = ['devl':'/tmp/DEVL',
+  'test':'/tmp/TEST',
+  'prod':'/tmp/PROD',
+  'prds':'/tmp/PRDS']
+  def esmHost
+  def esmPath
 
   timestamps {
     stage("choose release") {
@@ -19,7 +29,8 @@ node {
        id: 'userInput', message: 'choose releases version', parameters: [
 
        string(defaultValue: '9.3.11', description: '', name: 'version', trim: false),
-       choice(choices: releases, description: '', name: 'release')
+       choice(choices: releases, description: '', name: 'release'),
+       choice(choices: environment, description: 'deployment target', name: 'env')
        ])
        release=userInput['release']
        packageName="release-Admin-gbc-"+userInput['version']+".zip"
