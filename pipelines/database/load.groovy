@@ -37,7 +37,7 @@
           ])
         }
 
-        stage("load sql file") {
+        stage("load scripts") {
           wrap([$class: 'BuildUser']) {
             slackMessage = "${BUILD_USER} is loading DB script on database ${dburls[userInput['env']]}\n"
             slackMessage += "Dry run: "+ userInput['dryrun']
@@ -94,7 +94,7 @@
                         if (output.contains("ERROR") || output.contains("ORA-")){
                           slackMessage += "ERROR in output: "+ filename + "\n"
                           throw "ERROR in output"
-                        }                
+                        }
                       }
                       break
                     case "jss":

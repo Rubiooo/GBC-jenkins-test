@@ -31,7 +31,7 @@ node {
       packageList.add(string(defaultValue: '', description: 'Pull Request description', name: 'description', trim: true))
       userInput= input (message: 'choose Jira issues', parameters: packageList)
     }
-    stage("promote db scripts") {
+    stage("promote scripts") {
       def sourceBranch= "${sourceEnv}-${targetEnv}"
       def now = new Date()
       def TIMESTAMP=now.format("yyyyMMdd-HHmm")
