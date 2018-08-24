@@ -9,9 +9,9 @@ pipelineJob('scripts_promotion/load_script') {
        blocksInheritance()
    }
    parameters {
-        choiceParam('ENV', ['devl', 'test', 'prod', 'prds'])
-        stringParam('username', 'jenkins', 'db username')
-        nonStoredPasswordParam('password', 'db password')
+        choiceParam('Environment', ['devl', 'test', 'prod', 'prds'])
+        stringParam('Username', 'jenkins', 'db username')
+        nonStoredPasswordParam('Password', 'db password')
         booleanParam('DryRun', true)
     }
     definition {
