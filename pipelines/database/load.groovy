@@ -86,7 +86,7 @@
                     case "db":
                       slackMessage += " >> loading sqlfile: " + filename +"\n"
                       cmd = "docker run -v ${ROOTFOLDER}:/sql -t --rm -e URL=$dburl nextlink/sqlplus @/sql/$filename"
-                      println (cmd)
+                      // println (cmd)
                       if (userInput['dryrun']==false) {
                         sh (cmd)
                         def output = sh (returnStdout: true, script: cmd)
