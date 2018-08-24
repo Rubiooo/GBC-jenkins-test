@@ -3,7 +3,7 @@ pipelineJob('scheduled_job/devl_nightly') {
     description('''load script to devl and deploy war to devl every morning at 2am
 ''')
     triggers {
-        cron('0 2 * * *')
+        cron('H 2 * * *')
     }
     definition {
         cpsScm {
