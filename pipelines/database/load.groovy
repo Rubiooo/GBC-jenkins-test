@@ -39,7 +39,7 @@
 
         stage("load scripts") {
           wrap([$class: 'BuildUser']) {
-            slackMessage = "${BUILD_USER} is loading DB script on database ${dburls[userInput['env']]}\n"
+            slackMessage = env.BUILD_USER + " is loading DB script on database ${dburls[userInput['env']]}\n"
             slackMessage += "Dry run: "+ userInput['dryrun']
             slackSend (channel: 'db-promotion', message: slackMessage)
           }
