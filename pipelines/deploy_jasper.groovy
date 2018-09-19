@@ -1,115 +1,189 @@
 node {
 
-  def repo = 'banner_pages_gbc'
-  def directory = new File(repo)
-  def filePath
-  def fileName
-  def list = []
-  def fileList = []
-  def userInput
-
   def environment="devl\ntest\nprod\nprds"
-  def jasperList = ['devl':'http://ban9appnav01d.georgebrown.ca:7081/jasperserver-pro',
-  'test':'https://ban9pb01u.georgebrown.ca:9443/jasperserver-pro',
-  'prod':'ban9appnav01d.gbcdev.local',
-  'prds':'ban9appnav01d.gbcdev.local']
-  def jasperPathList = ['devl':'organizations/ellucian/Reports/',
-  'test':'/tmp/TEST',
-  'prod':'/tmp/PROD',
-  'prds':'/tmp/PRDS']
-  def dataSourcePathList = ['devl':'organizations/ellucian/',
-  'test':'/tmp/TEST',
-  'prod':'/tmp/PROD',
-  'prds':'/tmp/PRDS']
-  def dataSource = 'bannerDB'
+  def serverList = ['devl':'DEVL', 'test':'TEST', 'prod':'PROD', 'prds':'PRDS']
+  def sourceList = ['devl':'devl', 'test':'devl', 'prds':'test', 'prod':'prds']
+  def jasperList = ['devl':'devl.host.local',
+  'test':'test.host.local',
+  'prod':'tbd',
+  'prds':'tbd']
+  def tomcatList = ['devl':'/path/to/tomcat/bin',
+  'test':'/path/to/tomcat/bin',
+  'prod':'tbd',
+  'prds':'tbd']
+  def rootFolders = ['devl':'/path/to/jasperserver/buildomatic',
+  'test':'/path/to/jasperserver/buildomatic',
+  'prod':'tbd',
+  'prds':'tbd']
 
-  def jasperHost
-  def jasperPath
-  def url
+  def jrxmlPath = './gbc-*-reports/src/main/java/net/hedtech/gbc/*/reports'
+
+  def userInput
+  def targetEnv
+  def sourceEnv
+  def targetHost
+  def sourceHost
+  def targetServer
+  def sourceServer
+  def targetTomcat
+  def sourceTomcat
+  def targetRootFolder
+  def sourceRootFolder
+  def sourceReportPath
+  def list
+  def newline
+  def nameList = []
+  def fileList = []
+  def folderName
+  def fileName
+  def reportNames = []
+  def reportList = []
 
   timestamps {
-    stage("checkout JRXML") {
-      sh "rm -rf banner_pages_gbc"
-      // scm=checkout([
-      //   $class: 'GitSCM',
-      //   branches: [[name: "master"]],
-      //   userRemoteConfigs: [[url: "ssh://git@gitrepo.georgebrown.ca:7999/gbc/banner_pages_gbc.git"]]
-      // ])
-      sh "git clone ssh://git@gitrepo.georgebrown.ca:7999/gbc/${repo}.git"
-      if (!directory.isDirectory())
-      {
-        println "The provided directory name ${repo} is NOT a directory."
+    stage("Select environment and Jasper repor") {
+      scm=checkout([
+        $class: 'GitSCM',
+        branches: [[name: "master"]],
+        userRemoteConfigs: [[url: "ssh://git@servername:7888/gbc/reponame.git"]]
+        ])
+
+      sh "rm -f fileList"
+      sh "find . -type f -name '*.jrxml' > listJrxml;"
+      list = readFile( "listJrxml" ).split( "\\r?\\n" )
+      sh "rm -f listJrxml"
+      for (file in list) {
+        newline = file.toString()
+        fileList.add(newline)
       }
-      println "Searching for jrxml files in directory ${repo}"
-    }
-    stage("upload JRXML files") {
-      sh "rm -rf list"
-      directory.eachDirRecurse() { dir ->
-          dir.eachFileMatch(~/.*.jrxml/) { file ->
-              filePath = file.toString()
-              list.add(filePath)
-          }
+      HashSet<String> set = new HashSet<>();
+      for (line in fileList) {
+        folderName = line.trim().substring(line.lastIndexOf("/", line.lastIndexOf("/") - 1 ) + 1, line.lastIndexOf("/"))
+        fileName = folderName.toUpperCase()
+        if (!set.contains(fileName)) {
+          nameList.add(fileName)
+          set.add(fileName)
+        }
       }
-      for (line in list) {
-          fileName=line.trim().substring(line.lastIndexOf("/") + 1, line.lastIndexOf("."))
-          fileList.add(booleanParam(defaultValue: false, description: '', name: fileName))
+      reportNames = nameList.sort()
+      for (reportName in reportNames) {
+        reportList.add(booleanParam(defaultValue: false, description: '', name: reportName))
       }
 
       userInput = input(
-       id: 'userInput', message: 'upload JRXML', parameters: [
-        choice(choices: environment, description: '', name: 'env'),
-        choice(choices: fileList, description: 'JRXML files', name: 'file'),
-        string(defaultValue: 'superuser', description: 'jasper username', name: 'username', trim: true),
-        password(defaultValue: '', description: 'jasper password', name: 'password'),
+       id: 'userInput', message: 'Choose target environment', parameters: [
+        choice(choices: environment, description: '', name: 'env')
         ])
 
-      for (name in fileList) {
-        if (userInput[file]) {
-          //println(name)
-          String jrxml_data
-          def foldername
-          def dataSourcePath
-          directory.eachDirRecurse() { dir ->
-              dir.eachFileMatch(~/${name}.jrxml/) { file ->
-                  filePath = file.toString()
-                  folderName = name.toLowerCase()
-                  // upload each jrxml to jasper server
-                  jrxml_data = new File(filePath).text
+      targetEnv = userInput
+      sourceEnv = sourceList[targetEnv]
 
+      targetHost = jasperList[targetEnv]
+      sourceHost = jasperList[sourceEnv]
+      targetServer = serverList[targetEnv]
+      sourceServer = serverList[sourceEnv]
+      targetTomcat = tomcatList[targetEnv]
+      sourceTomcat = tomcatList[sourceEnv]
+      targetRootFolder = rootFolders[targetEnv]
+      sourceRootFolder = rootFolders[sourceEnv]
+      sourceReportPath = "${sourceRootFolder}/resources/organReports"
 
-                  jasperHost=jasperList[userInput['env']]
-                  jasperPath=jasperPathList[userInput['env']]+"${folderName}"
-                  url="${jasperHost}"+'/rest_v2/resources/'+"${jasperPath}"
-                  dataSourcePath=dataSourcePathList[userInput['env']]
-
-                  try {
-                    sh "curl  -X POST \"${url}\" \
-                        -H \"Content-Type:application/jrxml\" \
-                        -H \"Content-Disposition:attachment; filename=${name}\" \
-                        -d \"${jrxml_data}\" \
-                        --user userInput['username']:userInput['password']"
-                  } catch(ERROR) {
-                    throw "file already exist"
-                  }
-
-              }
-          }
-
-
-          // sh "curl -X DELETE ${JasperHost}/rest_v2/resources/${JasperPath} \
-          //     --user userInput['username']:userInput['password']"
-
-          // sh "curl  -X POST ${JasperHost}/rest_v2/resources/${JasperPath} \
-          //     -H \"Content-Type:application/repository.reportUnit+json\" \
-          //     -d \"{"uri": "/${foldername}/${fileName}.toUpperCase()","label": "${fileName}.toUpperCase()","description": "",  "permissionMask": "0", "version": "0" , "alwaysPromptControls": "true","controlsLayout": "popupScreen", "jrxml": {"jrxmlFileReference": { "uri": "/${foldername}/${fileName}"} },"dataSource": {"dataSourceReference": { "uri": "${dataSourcePath}/${dataSource}"}}}\" \
-          //     --user userInput['username']:userInput['password']"
-        }
+      userInput= input (message: 'Choose Jasper reports', parameters: reportList)
+      wrap([$class: 'BuildUser']) {
+        slackSend (channel: 'jenkins', message: ":black_square_button: "+  env.BUILD_USER +" start deploy Jasper report from "+ sourceServer +" to "+ targetServer)
       }
+    }
+
+    stage("Stop Tomcat") {
+      sh "ssh $sourceHost \"sudo -u tomcat ${sourceTomcat}/shutdown.sh\""
+      wrap([$class: 'BuildUser']) {
+        slackSend (channel: 'jenkins', message: ":black_square_button: " + " Start export Jasper report from " + sourceServer + ' - ' + sourceHost)
+      }
+    }
+    try {
+          stage("Export files and Update Jasper reports") {
+            sh "ssh $sourceHost \"sudo rm -rf ${sourceRootFolder}/gbc-jasper-reports.zip\""
+            sh "ssh $sourceHost \"sudo rm -rf ${sourceRootFolder}/resources\""
+
+            sh "ssh $sourceHost \"cd $sourceRootFolder && sudo ./js-export.sh --uris /organizations/Reports --output-zip gbc-jasper-reports.zip\""
+            sh "ssh $sourceHost \"cd $sourceRootFolder && unzip -o gbc-jasper-reports.zip\""
+            sh "ssh $sourceHost \"cd $sourceRootFolder && chmod -R 755 resources\""
+
+            sh "scp $sourceHost:${sourceRootFolder}/resources/organizations/Reports/.folder.xml ."
+            sh "sed -i '/<\\/folder>/d' .folder.xml"
+            println "old folder.xml is below: "
+            sh "cat .folder.xml"
+
+            for ( reportName in reportNames) {
+              if (userInput[reportName]) {
+                folderName = reportName.toLowerCase()
+                String LINE1 = "    <folder>${folderName}</folder>"
+                sh "grep -q -F '$LINE1' .folder.xml || echo '$LINE1' >> .folder.xml"
+                sh "rm -f fileList"
+                sh "find ${jrxmlPath}/${folderName} -type f -name '*.jrxml' > listJrxml;"
+                list = readFile( "listJrxml" ).split( "\\r?\\n" )
+                sh "rm -f listJrxml"
+                for (file in list) {
+                  def jasperFile = file.toString()
+                  fileName = jasperFile.trim().substring(jasperFile.lastIndexOf("/") + 1, jasperFile.lastIndexOf("."))
+                  println "fileName: $fileName"
+                  println "folderName: $folderName"
+                  def ROOTFOLDER = env.WORKSPACE
+                  if (fileName.toLowerCase().equals(folderName)) {
+                    def folder = folderName.toUpperCase()
+                    def dataFolder = "${folder}_files"
+                    print "dataFolder: $dataFolder"
+                    sh "cp ${jasperFile} main_jrxml.data"
+                    sh "scp main_jrxml.data $sourceHost:${sourceReportPath}/${folderName}/${dataFolder}"
+                    sh "ssh $sourceHost \"cd $sourceRootFolder && sudo zip gbc-jasper-reports.zip resources/organizations/Reports/${folderName}/${dataFolder}/main_jrxml.data\""
+                    sh "rm -f main_jrxml.data"
+                  } else {
+                    folder = folderName.toUpperCase()
+                    dataFolder = "${folder}_files"
+                    print "dataFolder: $dataFolder"
+                    def subFile = "${fileName}.jrxml.data"
+
+                    sh "cp ${jasperFile} ${subFile}"
+                    sh "scp ${ROOTFOLDER}/${subFile} $sourceHost:${sourceReportPath}/${folderName}/${dataFolder}"
+                    sh "ssh $sourceHost \"cd $sourceRootFolder && sudo zip gbc-jasper-reports.zip resources/organizations/Reports/${folderName}/${dataFolder}/${subFile}\""
+                    sh "rm -f ${subFile}"
+                  }
+                }
+              }
+            }
+            String LINE2 = "</folder>"
+            sh "grep -q -F 'EXAMPLE-NONEXIST' .folder.xml || echo '$LINE2' >> .folder.xml"
+            println "new folder.xml is below: "
+            sh "cat .folder.xml"
+            sh "scp .folder.xml $sourceHost:${sourceRootFolder}/resources/organizations/Reports"
+            sh "ssh $sourceHost \"cd $sourceRootFolder && sudo zip gbc-jasper-reports.zip resources/organizations/Reports/.folder.xml\""
+            sh "rm -rf .folder.xml"
+
+            wrap([$class: 'BuildUser']) {
+              slackSend (channel: 'jenkins', message: ":black_square_button: "+ " Start import Jasper report to " + targetServer + ' - ' + targetHost)
+            }
+            if (targetEnv == 'devl') {
+              sh "ssh $targetHost \"cd $targetRootFolder && sudo ./js-import.sh --input-zip gbc-jasper-reports.zip --update\""
+              slackSend (channel: 'jenkins', message: ":ballot_box_with_check: Successfully deploy Jasper report from " + sourceServer + ' to ' + targetServer+"  "+BUILD_URL)
+            } else {
+              sh "ssh $targetHost \"sudo -u tomcat ${targetTomcat}/shutdown.sh\""
+              try {
+                  sh "scp $sourceHost:/home/sysadmin/jasperreports-server-6.1.1-bin/buildomatic/gbc-jasper-reports.zip ."
+                  sh "scp gbc-jasper-reports.zip $targetHost:${targetRootFolder}"
+                  sh "ssh $targetHost \"cd $targetRootFolder && sudo ./js-import.sh --input-zip gbc-jasper-reports.zip --update\""
+                  slackSend (channel: 'jenkins', message: ":ballot_box_with_check: Successfully deploy Jasper report from " + sourceServer + ' to ' + targetServer+"  "+BUILD_URL)
+              } catch(error) {
+                currentBuild.result = 'FAILURE'
+                slackSend (channel: 'jenkins', message: ":warning: import Jasper to $targetServer failed, please check logs -> ${BUILD_URL}")
+              }
+              sh "ssh $targetHost \"sudo -u tomcat ${targetTomcat}/startup.sh\""
+            }
+          }
+    } catch(error) {
+      currentBuild.result = 'FAILURE'
+      slackSend (channel: 'jenkins', message: ":warning: deploy Jasper failed, please check logs -> ${BUILD_URL}")
+    }
+    stage("Start Tomcat") {
+      sh "ssh $sourceHost \"sudo -u tomcat ${sourceTomcat}/startup.sh\""
     }
   }
 }
-
-
-
-//banner_pages_gbc/gbc-student-reports/src/main/java/net/hedtech/banner/gbc/student/reports/szrregblcky/SZRREGBLCKY.jrxml
-// curl -X POST http://ban9appnav01d.georgebrown.ca:7081/jasperserver-pro/rest_v2/resources/organizations/ellucian/Reports/test1 -H "Content-Type:application/jrxml" -H "Content-Disposition:attachment; fileName=test1" -d "" --user superuser:superuser
