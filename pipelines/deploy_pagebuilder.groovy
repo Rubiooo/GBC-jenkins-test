@@ -39,6 +39,9 @@ node {
 
     try {
         stage("Choose Pages") {
+          wrap([$class: 'BuildUser']) {
+          slackSend (channel: 'jenkins', message: ":black_square_button: "+  env.BUILD_USER +" start deploy PageBuilder in "+ targetServer +" - "+targetHost)
+        }
           scm=checkout([
           $class: 'GitSCM',
           branches: [[name: "master"]],
@@ -88,22 +91,23 @@ node {
                 case "pages":
                   sh "scp $fileName $targetHost:${pagePath}/pbTemp.page/"
                   break
-                  case "virtualDomains":
-                    sh "scp $fileName $targetHost:${pagePath}/pbTemp.virtualDomain/"
+                case "virtualDomains":
+                  sh "scp $fileName $targetHost:${pagePath}/pbTemp.virtualDomain/"
+                  break
+                case "css":
+                    sh "scp $fileName $targetHost:${pagePath}/pbTemp.css/"
                     break
-                    case "css":
-                      sh "scp $fileName $targetHost:${pagePath}/pbTemp.css/"
-                      break
-                      default:
-                      //slackMessage += "unknow category "+ prefix + "\n"
-                      throw "unknow category"
-                    }
-                    sh "rm -rf $fileName"
-                  }
-                }
+                default:
+                  slackMessage += "unknow category "+ prefix + "\n"
+                  throw "unknow category"
               }
-    } catch (e) {
-      print e
+              sh "rm -rf $fileName"
+            }
+          }
+          slackSend (channel: 'jenkins', message: ":ballot_box_with_check: Successfully deploy PageBuilder in " + targetServer +" "+BUILD_URL)
+      }
+    } catch (error) {
+      slackSend (channel: 'jenkins', message: ":warning: deploy PageBuilder failed, please check logs -> ${BUILD_URL}")
     }
     stage("Start Tomcat") {
       sh "ssh $targetHost \"sudo -u tomcat ${tomcatPath}/startup.sh\""
