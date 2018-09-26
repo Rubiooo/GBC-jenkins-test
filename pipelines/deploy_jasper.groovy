@@ -3,10 +3,10 @@ node {
   def environment="devl\ntest\nprod\nprds"
   def serverList = ['devl':'DEVL', 'test':'TEST', 'prod':'PROD', 'prds':'PRDS']
   def promotionPath ="devl->devl\ndevl->test\ntest->prds\nprds->prod"
-  def jasperList = ['devl':'ban9appnav01d.gbcdev.local',
-  'test':'ban9pb01u.gbcuat.local',
-  'prod':'ban9pb01u.gbcuat.local',
-  'prds':'ban9pb01u.gbcuat.local']
+  def jasperList = ['devl':'gbcdev.local',
+  'test':'gbcuat.local',
+  'prod':'gbcuat.local',
+  'prds':'gbcuat.local']
   def tomcatList = ['devl':'/u01/app/tomcat/instances/tomcat1/bin',
   'test':'/opt/tomcat/instances/tomcat1/bin',
   'prod':'/opt/tomcat/instances/tomcat1/bin',
