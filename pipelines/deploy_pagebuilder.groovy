@@ -5,8 +5,8 @@ node {
   'test':'TEST',
   'prod':'PROD',
   'prds':'PRDS']
-  def targetHosts = ['devl':'gbcdev.local',
-  'test':'Gbcuat.local',
+  def targetHosts = ['devl':'Ban9pb01d.gbcdev.local',
+  'test':'gbcxe01u.Gbcuat.local',
   'prod':'tbd',
   'prds':'tbd']
   def pagePaths = ['devl': '/opt/tomcat/temp',
@@ -18,17 +18,17 @@ node {
   'prod':'page/virtdom/css',
   'prds':'page/virtdom/css']
   def webServerPaths = ['devl': '/opt/tomcat/bin',
-  'test':'/path/to/weblogic.jar',
+  'test':'/u01/app/oracle/Middleware/wlserver/server/lib/weblogic.jar',
   'prod':'tbd',
   'prds':'tbd']
   def adminurls = ['devl': 'na',
-  'test':'adminserverurl',
+  'test':'t3://gbcxe01u:7001',
   'prod':'tbd',
   'prds':'tbd']
-  def credentials = ['devl': 'na',
-  'test':'username:password',
-  'prod':'tbd',
-  'prds':'tbd']
+  def credentials = ['devl': 'na:na',
+  'test':'weblogic:password1',
+  'prod':'username:password',
+  'prds':'username:password']
   def applicationNames = ['devl': 'na',
   'test':'BannerExtensibility',
   'prod':'tbd',
@@ -38,7 +38,7 @@ node {
   'prod':'tbd',
   'prds':'tbd']
   def sourcePaths = ['devl': 'na',
-  'test':'/u02/banapp/staging/ban9app/banner_project/current/dist',
+  'test':'/u02/banapp/staging/ban9app/banner_extensibility_9.2/current/dist',
   'prod':'tbd',
   'prds':'tbd']
 
@@ -155,7 +155,7 @@ node {
                 sh "scp $fileName $targetHost:${pagePath}/${cssFolder}/"
                 break
               default:
-                throw "unknow file category"
+                throw "Unknown file category"
             }
             sh "rm -rf $fileName"
           }
