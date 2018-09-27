@@ -5,8 +5,8 @@ node {
   'test':'TEST',
   'prod':'PROD',
   'prds':'PRDS']
-  def targetHosts = ['devl':'Ban9pb01d.gbcdev.local',
-  'test':'gbcxe01u.Gbcuat.local',
+  def targetHosts = ['devl':'gbcdev.local',
+  'test':'Gbcuat.local',
   'prod':'tbd',
   'prds':'tbd']
   def pagePaths = ['devl': '/opt/tomcat/temp',
@@ -22,11 +22,11 @@ node {
   'prod':'tbd',
   'prds':'tbd']
   def adminurls = ['devl': 'na',
-  'test':'t3://gbcxe01u:7001',
+  'test':'t3://01u:7001',
   'prod':'tbd',
   'prds':'tbd']
   def credentials = ['devl': 'na:na',
-  'test':'weblogic:password1',
+  'test':'na:na',
   'prod':'username:password',
   'prds':'username:password']
   def applicationNames = ['devl': 'na',
@@ -144,6 +144,10 @@ node {
             def fileName = jsonFile.trim().substring(jsonFile.indexOf(".") + 1)
             println "fileName: $fileName"
             sh "cp $line $fileName"
+            // delete files that are older than 30 days
+            sh "ssh $targetHost \"find ${pagePath}/${pageFolder} -type f -mtime +30 -exec rm -rf {} \\;\""
+            sh "ssh $targetHost \"find ${pagePath}/${virtFolder} -type f -mtime +30 -exec rm -rf {} \\;\""
+            sh "ssh $targetHost \"find ${pagePath}/${cssFolder} -type f -mtime +30 -exec rm -rf {} \\;\""
             switch (prefix) {
               case "pages":
                 sh "scp $fileName $targetHost:${pagePath}/${pageFolder}/"
