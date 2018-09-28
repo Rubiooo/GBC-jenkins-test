@@ -22,13 +22,9 @@ node {
   'prod':'tbd',
   'prds':'tbd']
   def adminurls = ['devl': 'na',
-  'test':'t3://01u:7001',
+  'test':'t3://gbcxe01u:7001',
   'prod':'tbd',
   'prds':'tbd']
-  def credentials = ['devl': 'na:na',
-  'test':'na:na',
-  'prod':'username:password',
-  'prds':'username:password']
   def applicationNames = ['devl': 'na',
   'test':'BannerExtensibility',
   'prod':'tbd',
@@ -42,6 +38,7 @@ node {
   'prod':'tbd',
   'prds':'tbd']
 
+  def userInput
   def targetEnv
   def targetServer
   def targetHost
@@ -59,8 +56,6 @@ node {
   def webServerPath
   def adminurl
   def credential
-  def username
-  def password
   def applicationName
   def applicationServer
   def sourcePath
@@ -68,10 +63,13 @@ node {
   timestamps {
     stage("Choose env") {
       userInput = input(
-       id: 'userInput', message: 'choose target environment', parameters: [
-       choice(choices: environment, description: '', name: 'target environment')
-       ])
-      targetEnv = userInput
+        id: 'userInput', message: 'choose target environment', parameters: [
+        choice(choices: environment, description: 'target enviorment', name: 'env'),
+        string(defaultValue: '', description: 'weblogic username, if applicable', name: 'username', trim: true),
+        password(defaultValue: '', description: 'webloigc password, if applicable', name: 'password')
+        ])
+
+      targetEnv = userInput['env']
       targetServer = targetServers[targetEnv]
       targetHost = targetHosts[targetEnv]
       pagePath = pagePaths[targetEnv]
@@ -80,8 +78,8 @@ node {
       cssFolder = folderNames[targetEnv].split("/")[2]
       webServerPath = webServerPaths[targetEnv]
       adminurl = adminurls[targetEnv]
-      username = credentials[targetEnv].split(":")[0]
-      password = credentials[targetEnv].split(":")[1]
+      def username = userInput['username']
+      def password = userInput['password']
       credential = "-username $username -password $password"
       applicationName = applicationNames[targetEnv]
       applicationServer = applicationServers[targetEnv]
@@ -92,7 +90,7 @@ node {
       if ('devl'.equals(targetEnv)) {
         sh "ssh $targetHost \"sudo -u tomcat ${webServerPath}/shutdown.sh\""
       } else {
-        sh "ssh $targetHost \"java -cp $webServerPath weblogic.Deployer -adminurl $adminurl $credential -name $applicationName -undeploy -timeout 300\""
+        sh "set +x; ssh $targetHost \"java -cp $webServerPath weblogic.Deployer -adminurl $adminurl $credential -name $applicationName -undeploy -timeout 300\""
       }
     }
 
@@ -133,8 +131,12 @@ node {
 
       stage("Update Pages") {
         for (line in fileList) {
-          pageName = line.trim().substring(line.lastIndexOf("/", line.lastIndexOf("/") - 1 ) + 1, line.lastIndexOf("/"))
+          // delete files that are older than 30 days
+          sh "ssh $targetHost \"find ${pagePath}/${pageFolder} -type f -mtime +30 -exec rm -rf {} \\;\""
+          sh "ssh $targetHost \"find ${pagePath}/${virtFolder} -type f -mtime +30 -exec rm -rf {} \\;\""
+          sh "ssh $targetHost \"find ${pagePath}/${cssFolder} -type f -mtime +30 -exec rm -rf {} \\;\""
 
+          pageName = line.trim().substring(line.lastIndexOf("/", line.lastIndexOf("/") - 1 ) + 1, line.lastIndexOf("/"))
           if (userInput[pageName]) {
             println pageName
             jsonFile = line.trim().substring(line.lastIndexOf("/") + 1)
@@ -144,10 +146,7 @@ node {
             def fileName = jsonFile.trim().substring(jsonFile.indexOf(".") + 1)
             println "fileName: $fileName"
             sh "cp $line $fileName"
-            // delete files that are older than 30 days
-            sh "ssh $targetHost \"find ${pagePath}/${pageFolder} -type f -mtime +30 -exec rm -rf {} \\;\""
-            sh "ssh $targetHost \"find ${pagePath}/${virtFolder} -type f -mtime +30 -exec rm -rf {} \\;\""
-            sh "ssh $targetHost \"find ${pagePath}/${cssFolder} -type f -mtime +30 -exec rm -rf {} \\;\""
+
             switch (prefix) {
               case "pages":
                 sh "scp $fileName $targetHost:${pagePath}/${pageFolder}/"
@@ -177,7 +176,7 @@ node {
       if ('devl'.equals(targetEnv)) {
         sh "ssh $targetHost \"sudo -u tomcat ${webServerPath}/startup.sh\""
       } else {
-        sh "ssh $targetHost \"java -cp $webServerPath weblogic.Deployer -adminurl $adminurl $credential -targets $applicationServer -deploy ${sourcePath}/${applicationName}.war -timeout 300\""
+        sh "set +x; ssh $targetHost \"java -cp $webServerPath weblogic.Deployer -adminurl $adminurl $credential -targets $applicationServer -deploy ${sourcePath}/${applicationName}.war -timeout 300\""
       }
     }
   }
